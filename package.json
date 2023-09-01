@@ -1,0 +1,41 @@
+{
+  "name": "@vine-kit/monorepo",
+  "type": "module",
+  "version": "0.0.1",
+  "private": true,
+  "packageManager": "pnpm@8.7.1",
+  "scripts": {
+    "taze": "taze minor -wIr && pnpm -r --parallel run update-post",
+    "build": "rimraf packages/*/dist && pnpm -r --filter=./packages/* run build && pnpm -r run build-post",
+    "dev": "nr stub",
+    "deploy": "nr build",
+    "lint": "eslint --cache .",
+    "lint:fix": "nr lint --fix",
+    "stub": "pnpm -r --filter=./packages/* --parallel run stub",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest",
+    "test:update": "vitest -u"
+  },
+  "devDependencies": {
+    "@antfu/eslint-config": "^0.41.0",
+    "@antfu/ni": "^0.21.6",
+    "@vine-kit/core": "workspace:*",
+    "bumpp": "^9.2.0",
+    "eslint": "^8.48.0",
+    "esno": "^0.17.0",
+    "lint-staged": "^14.0.1",
+    "pnpm": "8.7.1",
+    "taze": "^0.11.2",
+    "unbuild": "^2.0.0",
+    "vine-kit": "workspace:*",
+    "vitest": "^0.34.3"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*.{js,ts,tsx,vue,md}": [
+      "eslint --cache --fix"
+    ]
+  }
+}

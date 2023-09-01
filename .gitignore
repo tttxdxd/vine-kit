@@ -1,0 +1,11 @@
+.cache
+.DS_Store
+.idea
+.output
+.temp
+*.local
+*.log
+*.vsix
+dist
+node_modules
+.eslintcache

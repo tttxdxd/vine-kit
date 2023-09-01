@@ -1,0 +1,35 @@
+{
+  "name": "@vine-kit/core",
+  "version": "0.0.1",
+  "description": "A set of tools for JavaScript.",
+  "author": "tttxdxd <tttxdxd@gmail.com>",
+  "license": "MIT",
+  "funding": "https://github.com/sponsors/tttxdxd",
+  "homepage": "https://github.com/tttxdxd/vine-kit#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tttxdxd/vine-kit.git"
+  },
+  "bugs": "https://github.com/tttxdxd/vine-kit/issues",
+  "keywords": [
+    "tool"
+  ],
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "unbuild",
+    "stub": "unbuild --stub"
+  }
+}
