@@ -1,19 +1,15 @@
 import type { DeepPartial } from '../types'
-import { isArray, isObject, isPlainObject } from './is'
+import { isArray, isFunction, isObject, isPlainObject } from './general'
 
 /**
  * Determines whether an object has a property with the specified name.
  * @param val
- * @param propertyKey — A property name.
+ * @param key — A property name.
  * @returns
  */
-export const hasOwn = (val: unknown, propertyKey: string): boolean => Object.prototype.hasOwnProperty.call(val, propertyKey)
-/**
- * Returns a string representation of an object.
- * @param val
- * @returns
- */
-export const toString = (val: unknown): string => Object.prototype.toString.call(val)
+export const hasOwn = (val: object, key: string | symbol): key is keyof typeof val => Object.prototype.hasOwnProperty.call(val, key)
+export const objectToString = Object.prototype.toString
+export const toTypeString = (val: unknown): string => objectToString.call(val)
 
 /**
  * Deep merge two objects
@@ -44,7 +40,7 @@ export function mergeDeep<T>(original: T, patch: DeepPartial<T>, mergeArray = fa
 export function clone<T>(val: T): T {
   let k: any, out: any, tmp: any
 
-  if (Array.isArray(val)) {
+  if (isArray(val)) {
     out = Array(k = val.length)
     // eslint-disable-next-line no-cond-assign
     while (k--) out[k] = ((tmp = val[k]) && typeof tmp === 'object') ? clone(tmp) : tmp
@@ -71,4 +67,33 @@ export function clone<T>(val: T): T {
   }
 
   return val
+}
+
+/**
+ * Adds a property to an object, or modifies attributes of an existing property.
+ * @param o Object on which to add or modify the property. This can be a native JavaScript object (that is, a user-defined object or a built in object) or a DOM object.
+ * @param p The property name.
+ * @param value The value to be assigned to the property. This can be either a property descriptor object or a getter function.
+ */
+export function define(o: any, p: PropertyKey, value: (PropertyDescriptor & ThisType<any> | (() => any))) {
+  if (isFunction(value))
+    Object.defineProperty(o, p, { get: value })
+  else if (isPlainObject(value))
+    Object.defineProperty(o, p, value)
+  else
+    Object.defineProperty(o, p, { value })
+}
+
+export function defineLazy(o: any, p: PropertyKey, initail: () => any) {
+  Object.defineProperty(o, p, {
+    get() {
+      const temp = initail()
+      define(o, p, temp)
+      return isFunction(temp) ? temp() : hasOwn(temp, 'value') ? temp.value : temp
+    },
+    set(v) {
+      o[p] = v
+    },
+    configurable: true,
+  })
 }

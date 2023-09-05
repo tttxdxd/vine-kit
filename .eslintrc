@@ -7,12 +7,13 @@
       "error",
       {
         "paths": [
-          "unocss"
+          "vine-kit"
         ]
       }
     ],
     "yml/no-empty-document": "off",
-    "react/no-unknown-property": "off"
+    "react/no-unknown-property": "off",
+    "@typescript-eslint/ban-types": "off"
   },
   "overrides": [
     {
@@ -23,14 +24,6 @@
       ],
       "rules": {
         "no-restricted-imports": "off"
-      }
-    },
-    {
-      "files": [
-        "packages/vscode/**/*.*"
-      ],
-      "rules": {
-        "unicorn/prefer-node-protocol": "off"
       }
     },
     {
