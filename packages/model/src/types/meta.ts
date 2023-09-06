@@ -26,8 +26,6 @@ export type MetaRawOptions<Z extends z.ZodTypeAny> = {
   fromJSON?: <T>(this: any, value: any) => z.infer<Z>
   toJSON?: <T>(this: any, value: z.infer<Z>, key: string) => T
 
-  validators: (this: any, value: z.infer<Z>, key: string, data: any) => string[]
-
   model?: any
 } & (Z extends z.ZodDefault<any> ?
   any : {

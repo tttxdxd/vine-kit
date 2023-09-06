@@ -5,7 +5,7 @@ import g from '@vine-kit/model'
 
 // 定义账号类型
 const Account = g.meta({
-  type: g.string(),
+  type: g.string().min(6),
   default: '',
   label: '账号',
   required: true,
@@ -100,21 +100,23 @@ describe('login', () => {
   })
 
   it('表单校验', () => {
-    // const LoginModel = g.model({
-    //   account: Account,
-    //   password: Password,
-    // })
-    // const loginModel = new LoginModel()
+    const LoginModel = g.model({
+      account: Account,
+      password: Password,
+    })
+    const loginModel = new LoginModel()
 
-    // expect(loginModel.validate()).toBe(true)
+    loginModel.account = 'adm3in'
+    loginModel.password = '123456'
+    expect(loginModel.validate()).toBe(true)
 
-    // loginModel.account = ''
-    // expect(loginModel.validate()).toBe(false)
+    loginModel.account = ''
+    expect(loginModel.validate()).toBe(false)
 
-    // loginModel.account = 'admin'
-    // loginModel.password = ''
-    // expect(loginModel.validate()).toBe(false)
+    loginModel.account = 'admin'
+    loginModel.password = ''
+    expect(loginModel.validate()).toBe(false)
 
-    // loginModel.password = '123456'
+    loginModel.password = '123456'
   })
 })

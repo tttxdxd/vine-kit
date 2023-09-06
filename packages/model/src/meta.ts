@@ -110,6 +110,10 @@ export class Meta<
     return String(this.value)
   }
 
+  validate(val: any, key: string) {
+
+  }
+
   static isMeta: typeof isMetaClass = isMetaClass
 }
 

@@ -25,6 +25,7 @@ export interface IModel<T extends ModelRawShape, Views = ModelViews<T>, Store = 
   toJSON(): Store
   toParams(): any
   toFormData(): any
+  validate(): boolean
 }
 
 export type PartialStore<T extends ModelRawShape> = identity<{

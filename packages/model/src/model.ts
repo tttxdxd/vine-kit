@@ -1,6 +1,7 @@
 import { define } from '@vine-kit/core'
 import { Meta, MetaValueSymbol } from './meta'
 import type { ModelClass, ModelOptions, ModelRawShape, ModelStore, ModelViews, PartialStore } from './types/model'
+import { Schema } from './schema'
 import { bind } from './util'
 
 const ModelSymbol: unique symbol = Symbol('ModelSymbol')
@@ -13,18 +14,11 @@ export function isModelClass(value: any): value is ModelClass<any, any> {
 export class Model<
   T extends ModelRawShape, Views extends ModelViews<T> = ModelViews<T>, Store extends ModelStore<T> = ModelStore<T>,
 > {
-  protected _views!: Views
-  protected _store!: Store
-  protected _parent?: ModelClass<any>
-  protected _keyPath?: string
-
-  get $keyPath() {
-    return this._keyPath
-  }
-
-  get $parent() {
-    return this._parent
-  }
+  readonly $views!: Views
+  readonly $store!: Store
+  readonly $parent!: ModelClass<any>
+  readonly $keyPath!: string
+  private $schema!: Schema
 
   get $root() {
     let temp = this.$parent
@@ -35,29 +29,20 @@ export class Model<
     return temp
   }
 
-  get $views() {
-    return this._views
-  }
-
-  get $store() {
-    return this._store
-  }
-
   validate() {
-
+    return this.$schema.validate(this.$store)
   }
 
   fromJSON(json: PartialStore<T>) {
-    const result: any = {}
     const keys = Object.keys(json)
 
-    while (keys.length) {
-      const key = keys.shift()!
+    for (const key of keys) {
       const view = this.$views[key]
 
       if (!view)
-        continue;
-      (this._store as any)[key] = view?.fromJSON?.call(this, json[view.prop]) ?? json[view.prop]
+        continue
+
+      (this.$store as any)[key] = view?.fromJSON?.call(this, json[view.prop]) ?? json[view.prop]
     }
 
     return this
@@ -67,8 +52,7 @@ export class Model<
     const result: any = {}
     const keys = Object.keys(this.$views)
 
-    while (keys.length) {
-      const key = keys.shift()!
+    for (const key of keys) {
       const view = this.$views[key]
 
       result[key] = view?.toJSON?.(view.value) ?? view.value
@@ -99,12 +83,14 @@ export function model<T extends ModelRawShape, Views extends ModelViews<T>, Stor
       const $keyPath = options?.keyPath ?? ''
       const $views = $parent ? ($parent.$views[$keyPath] = $parent.$views[$keyPath] ?? {}) : {}
       const $store = $parent ? ($parent.$store[$keyPath] = $parent.$store[$keyPath] ?? {}) : {}
+      const $schema = new Schema()
       const keys = Object.keys(shape)
 
-      this._views = $views
-      this._store = $store
-      this._parent = $parent
-      this._keyPath = $keyPath
+      define(this, '$views', { value: $views })
+      define(this, '$store', { value: $store })
+      define(this, '$parent', { value: $parent })
+      define(this, '$keyPath', { value: $keyPath })
+      define(this, '$schema', { value: $schema })
 
       for (const key of keys) {
         const Constructor = shape[key]
@@ -114,6 +100,7 @@ export function model<T extends ModelRawShape, Views extends ModelViews<T>, Stor
           const meta = new Constructor({ model: this, prop: key })
 
           $views[key] = meta
+          $schema.attach(key, meta)
 
           define($store, key, (meta as any)[MetaValueSymbol](defaultValue))
           bind($store, key, meta, 'value')
@@ -124,6 +111,9 @@ export function model<T extends ModelRawShape, Views extends ModelViews<T>, Stor
             parent: this as any,
             keyPath: key,
           })
+
+          define(this, key, { value: model })
+          $schema.attach(key, model)
         }
       }
     }

@@ -11,6 +11,13 @@ export const hasOwn = (val: object, key: string | symbol): key is keyof typeof v
 export const objectToString = Object.prototype.toString
 export const toTypeString = (val: unknown): string => objectToString.call(val)
 
+export function isEmptyObject(val: object): boolean {
+  // eslint-disable-next-line no-unreachable-loop
+  for (const _ in val)
+    return false
+  return true
+}
+
 /**
  * Deep merge two objects
  */
@@ -76,12 +83,16 @@ export function clone<T>(val: T): T {
  * @param value The value to be assigned to the property. This can be either a property descriptor object or a getter function.
  */
 export function define(o: any, p: PropertyKey, value: (PropertyDescriptor & ThisType<any> | (() => any))) {
-  if (isFunction(value))
+  if (isFunction(value)) {
     Object.defineProperty(o, p, { get: value })
-  else if (isPlainObject(value))
-    Object.defineProperty(o, p, value)
-  else
-    Object.defineProperty(o, p, { value })
+  }
+  else if (isPlainObject(value)) {
+    if (hasOwn(value, 'get') || hasOwn(value, 'set') || hasOwn(value, 'value'))
+      Object.defineProperty(o, p, value)
+    else
+      Object.defineProperty(o, p, { value })
+  }
+  else { Object.defineProperty(o, p, { value }) }
 }
 
 export function defineLazy(o: any, p: PropertyKey, initail: () => any) {

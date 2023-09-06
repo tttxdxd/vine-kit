@@ -45,6 +45,15 @@ export function hasBlank(val: string[]): boolean {
   return isEmpty(val) || some(val, isBlank)
 }
 
+/**
+ * 检查字符串是否都为数字组成
+ * @param str
+ * @returns
+ */
+export function isNumeric(str: string): boolean {
+  return !isEmpty(str) && every(str, Char.isNumber)
+}
+
 export enum TrimMode {
   Start = -1,
   Both = 0,

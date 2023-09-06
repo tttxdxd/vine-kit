@@ -116,6 +116,8 @@ describe('model', () => {
 
     const user = new UserModel()
 
+    expect(user.role.title).toBe('学生')
+    expect(user.role.weight).toBe(130)
     expect(user.$store.role.title).toBe('学生')
     expect(user.$store.role.weight).toBe(130)
   })
