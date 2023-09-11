@@ -74,6 +74,7 @@ export class Meta<
   prop!: string
   label!: string
   value!: z.infer<Z>
+  error?: string
 
   get type() {
     return this.shape.type
@@ -114,7 +115,10 @@ export class Meta<
 
   }
 
-  static isMeta: typeof isMetaClass = isMetaClass
+  static isMetaClass: typeof isMetaClass = isMetaClass
+  static isMeta(val: unknown): val is IMeta<any, any> {
+    return val instanceof Meta
+  }
 }
 
 /**

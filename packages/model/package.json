@@ -33,7 +33,7 @@
     "stub": "unbuild --stub"
   },
   "dependencies": {
-    "zod": "^3.22.2",
-    "@vine-kit/core": "workspace:*"
+    "@vine-kit/core": "workspace:*",
+    "zod": "^3.22.2"
   }
 }

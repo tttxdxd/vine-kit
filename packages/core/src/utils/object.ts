@@ -1,5 +1,5 @@
 import type { DeepPartial } from '../types'
-import { isArray, isFunction, isObject, isPlainObject } from './general'
+import { isArray, isFunction, isObject, isPlainObject, isString } from './general'
 
 /**
  * Determines whether an object has a property with the specified name.
@@ -74,6 +74,34 @@ export function clone<T>(val: T): T {
   }
 
   return val
+}
+
+export function get(object: any, path: string | string[], defaultValue?: any) {
+  if (object == null)
+    return defaultValue
+
+  const keys = isString(path) ? path.split('.') : [...path]
+  let result = object
+  for (const key of keys) {
+    if (!isObject(result))
+      break
+    result = result[key]
+  }
+  return result === undefined ? defaultValue : result
+}
+
+export function set(object: any, path: string | string[], value: any) {
+  if (object == null)
+    return
+
+  const keys = isString(path) ? path.split('.') : [...path]
+  let result = object
+  for (const key of keys) {
+    if (!isObject(result))
+      break
+    result = result[key]
+  }
+  result[keys[keys.length - 1]] = value
 }
 
 /**

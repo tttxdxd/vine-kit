@@ -1,5 +1,6 @@
 import type { z } from 'zod'
 import type { identity } from '../util'
+import type { Schema } from '../schema'
 import type { MetaClass, toIMeta } from './meta'
 
 export interface ModelRawShape {
@@ -20,6 +21,8 @@ export interface IModel<T extends ModelRawShape, Views = ModelViews<T>, Store = 
   $parent?: IModel<any>
   $views: Views
   $store: Store
+  $schema: Schema
+  error: z.ZodError<any>
 
   fromJSON<Self>(this: Self, json: PartialStore<T>): Self
   toJSON(): Store

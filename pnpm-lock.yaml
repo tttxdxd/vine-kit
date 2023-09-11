@@ -17,6 +17,9 @@ importers:
       '@vine-kit/core':
         specifier: workspace:*
         version: link:packages/core
+      '@vine-kit/model':
+        specifier: workspace:*
+        version: link:packages/model
       bumpp:
         specifier: ^9.2.0
         version: 9.2.0

@@ -1,6 +1,6 @@
 import { define } from '@vine-kit/core'
 import { Meta, MetaValueSymbol } from './meta'
-import type { ModelClass, ModelOptions, ModelRawShape, ModelStore, ModelViews, PartialStore } from './types/model'
+import type { IModel, ModelClass, ModelOptions, ModelRawShape, ModelStore, ModelViews, PartialStore } from './types/model'
 import { Schema } from './schema'
 import { bind } from './util'
 
@@ -69,7 +69,10 @@ export class Model<
 
   }
 
-  static isModel: typeof isModelClass = isModelClass
+  static isModelClass: typeof isModelClass = isModelClass
+  static isModel(val: any): val is IModel<any> {
+    return val instanceof Model
+  }
 }
 
 export function model<T extends ModelRawShape, Views extends ModelViews<T>, Store extends ModelStore<T> = ModelStore<T>>(shape: T): ModelClass<T, Views, Store> {
@@ -83,7 +86,7 @@ export function model<T extends ModelRawShape, Views extends ModelViews<T>, Stor
       const $keyPath = options?.keyPath ?? ''
       const $views = $parent ? ($parent.$views[$keyPath] = $parent.$views[$keyPath] ?? {}) : {}
       const $store = $parent ? ($parent.$store[$keyPath] = $parent.$store[$keyPath] ?? {}) : {}
-      const $schema = new Schema()
+      const $schema = new Schema(this as any)
       const keys = Object.keys(shape)
 
       define(this, '$views', { value: $views })
@@ -96,7 +99,7 @@ export function model<T extends ModelRawShape, Views extends ModelViews<T>, Stor
         const Constructor = shape[key]
         const defaultValue = data?.[key]
 
-        if (Meta.isMeta(Constructor)) {
+        if (Meta.isMetaClass(Constructor)) {
           const meta = new Constructor({ model: this, prop: key })
 
           $views[key] = meta
@@ -106,7 +109,7 @@ export function model<T extends ModelRawShape, Views extends ModelViews<T>, Stor
           bind($store, key, meta, 'value')
           bind($store, key, this)
         }
-        else if (Model.isModel(Constructor)) {
+        else if (Model.isModelClass(Constructor)) {
           const model = new Constructor(defaultValue, {
             parent: this as any,
             keyPath: key,

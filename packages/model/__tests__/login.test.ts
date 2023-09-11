@@ -112,11 +112,13 @@ describe('login', () => {
 
     loginModel.account = ''
     expect(loginModel.validate()).toBe(false)
+    expect(loginModel.error.issues[0].message).toBe('至少需要包含 6 个字符')
 
     loginModel.account = 'admin'
-    loginModel.password = ''
     expect(loginModel.validate()).toBe(false)
 
+    loginModel.account = 'admin1'
     loginModel.password = '123456'
+    expect(loginModel.validate()).toBe(true)
   })
 })

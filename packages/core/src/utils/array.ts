@@ -1,3 +1,5 @@
+import { isObject } from './general'
+
 /**
  * 生成间隔为 step, 位于 [start, end) 区间的数组
  */
@@ -11,6 +13,10 @@ export function toArray<T>(val: T | T[] = []): T[] {
 
 export function isEmptyArray<T>(val: ArrayLike<T>): boolean {
   return val.length === 0
+}
+
+export function last<T>(val: T[]): T | undefined {
+  return Array.isArray(val) && val.length > 0 ? val[val.length - 1] : undefined
 }
 
 export function uniq<T>(val: T[]): T[] {

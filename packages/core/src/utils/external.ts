@@ -12,6 +12,7 @@ export * from './string'
 export * from './object'
 export * from './array'
 
+export * from './function'
 export * from './promise'
 
 export * from './events'
