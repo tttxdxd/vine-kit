@@ -1,20 +1,19 @@
 import { describe, expect, it } from 'vitest'
-import { z } from 'zod'
 
 import g from '@vine-kit/model'
 
 const Username = g.meta({
-  type: z.string().default(''),
+  type: String,
   label: '用户名',
 })
 
 const Age = g.meta({
-  type: z.number().default(0),
+  type: Number,
   label: '年龄',
 })
 
 const Title = g.meta({
-  type: z.string(),
+  type: String,
   default: '',
   label: '用户标题',
   computed() {
@@ -70,7 +69,7 @@ describe('model', () => {
       title: Title,
 
       description: g.meta({
-        type: z.string(),
+        type: String,
         default: '',
         computed() {
           return `${this.username}`
@@ -94,12 +93,12 @@ describe('model', () => {
   it('多层 model 嵌套 ', () => {
     const RoleModel = g.model({
       title: g.meta({
-        type: z.string(),
+        type: String,
         label: 'title',
         default: '学生',
       }),
       weight: g.meta({
-        type: z.number(),
+        type: Number,
         default: 0,
         computed() {
           return this.$parent.age * 10

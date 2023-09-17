@@ -1,103 +1,88 @@
-import type * as z from 'zod'
 import { define, defineLazy } from '@vine-kit/core'
 
-import { getDefaultValue } from './util'
-import type { IMeta, MetaClass, MetaRawOptions, MetaRawShape } from './types/meta'
+import type { IMeta, IMetaOptions, IMetaRawOptions, MetaClass, MetaType, MetaValue } from './types/meta'
+import { getDefaultValue, toParsedType, validateMetaType } from './util'
+import type { IModel } from './types/model'
+import { Validator } from './validator'
+import { type Issue, IssueCode } from './types/schema'
+import { errorMap } from './locales'
 
 const MetaSymbol: unique symbol = Symbol('MetaSymbol')
 export const MetaValueSymbol: unique symbol = Symbol('MetaValueSymbol')
 
-export function isMetaClass(value: any): value is MetaClass<any, any> {
+export function isMetaClass(value: any): value is MetaClass {
   return value && value[MetaSymbol]
 }
 
-export class Meta<
-  Z extends z.ZodTypeAny,
-  Shape extends MetaRawShape<Z>,
-  Model = undefined,
-> implements IMeta<Z, Shape> {
-  readonly shape: Shape
+export class Meta<T extends MetaType> {
+  private readonly shape: any
 
   /**
    * 初始化 meta 值
    */
-  [MetaValueSymbol](newVal?: z.infer<Z>) {
+  [MetaValueSymbol](newVal?: MetaValue<T>) {
     if (this.shape.computed)
       return this.shape.computed
     return {
-      value: newVal ?? this.shape.default ?? getDefaultValue(this.type as any),
+      value: newVal ?? this.shape.default ?? getDefaultValue(this.type),
       writable: true,
       enumerable: true,
       configurable: true,
     }
   }
 
-  constructor(options: MetaRawOptions<Z>) {
+  constructor(options: IMetaOptions<T>) {
     if (!options.type)
       throw new Error('Meta: type is required')
 
-    if (options.default && !options.type.safeParse(options.default).success)
+    if (options.default && !validateMetaType(options.default, options.type))
       throw new Error('Meta: default value is invalid')
 
-    const { type, required, readonly, disabled, hidden, model } = options
+    const { type, model } = options
+
+    const required = options.required ?? false
+    const readonly = options.readonly ?? false
+    const disabled = options.disabled ?? false
+    const hidden = options.hidden ?? false
+    const validators = [Validator.fromMeta(type), ...(options.validators ?? [])]
 
     this.shape = {
       type,
       default: options.default,
       computed: options.computed?.bind(model),
-
-      required: required ?? false,
-      readonly: readonly ?? false,
-      disabled: disabled ?? false,
-      hidden: hidden ?? false,
       formatter: options.formatter,
-      fromJSON: options.fromJSON,
-      toJSON: options.toJSON,
       model,
-    } as unknown as Shape
+    }
 
     this.prop = options.prop ?? ''
     this.label = options.label ?? ''
 
     defineLazy(this, 'value', this[MetaValueSymbol].bind(this))
+    define(this, 'required', required)
+    define(this, 'readonly', readonly)
+    define(this, 'disabled', disabled)
+    define(this, 'hidden', hidden)
+    define(this, 'validators', validators)
     define(this, 'formatter', {
       value: this.shape.formatter?.bind(model),
     })
-    define(this, 'fromJSON', {
-      value: this.shape.fromJSON?.bind(model),
+    define(this, 'from', {
+      value: options.from?.bind(model),
     })
-    define(this, 'toJSON', {
-      value: this.shape.toJSON?.bind(model),
+    define(this, 'to', {
+      value: options.to?.bind(model),
     })
   }
 
   prop!: string
   label!: string
-  value!: z.infer<Z>
+  value!: MetaValue<T>
   error?: string
+  issue?: Issue
+  validators!: Validator[]
 
   get type() {
     return this.shape.type
-  }
-
-  get default() {
-    return this.shape.default
-  }
-
-  get required() {
-    return this.shape.required
-  }
-
-  get readonly() {
-    return this.shape.readonly
-  }
-
-  get disabled() {
-    return this.shape.disabled
-  }
-
-  get hidden() {
-    return this.shape.hidden
   }
 
   get model() {
@@ -112,11 +97,14 @@ export class Meta<
   }
 
   validate(val: any, key: string) {
+    this.issue = Validator.validate(this.validators, val, [key])
+    this.error = this.issue?.message
 
+    return !this.issue
   }
 
   static isMetaClass: typeof isMetaClass = isMetaClass
-  static isMeta(val: unknown): val is IMeta<any, any> {
+  static isMeta(val: unknown): val is IMeta<any> {
     return val instanceof Meta
   }
 }
@@ -127,10 +115,9 @@ export class Meta<
  * @returns
  */
 export function meta<
-  Z extends z.ZodTypeAny,
-  Shape extends MetaRawShape<Z>,
->(shape: MetaRawOptions<Z>): MetaClass<Z, Shape> {
-  class _Meta extends Meta<any, any> {
+  T extends MetaType,
+>(shape: IMetaOptions<T>): MetaClass<T> {
+  class _Meta extends Meta<T> {
     static readonly [MetaSymbol] = true
 
     constructor(newShape?: any) {
@@ -141,7 +128,7 @@ export function meta<
       return meta({ ...shape, ...newShape })
     }
 
-    static default(val: boolean) {
+    static default(val: any) {
       return meta({ ...shape, default: val })
     }
 
@@ -149,22 +136,34 @@ export function meta<
       return meta({ ...shape, label: val })
     }
 
-    static readonly(val: boolean) {
+    static readonly(val: boolean = true) {
       return meta({ ...shape, readonly: val })
     }
 
-    static disabled(val: boolean) {
+    static disabled(val: boolean = true) {
       return meta({ ...shape, disabled: val })
     }
 
-    static hidden(val: boolean) {
+    static hidden(val: boolean = true) {
       return meta({ ...shape, hidden: val })
     }
 
-    static required(val: boolean) {
-      return meta({ ...shape, default: val })
+    static required(val: boolean = true) {
+      return meta({ ...shape, required: val })
     }
   }
 
   return _Meta as any
+}
+
+export function string(val: string = '') {
+  return meta({ type: String, default: val })
+}
+
+export function number(val: number = 0) {
+  return meta({ type: Number, default: val })
+}
+
+export function boolean(val: boolean = false) {
+  return meta({ type: Boolean, default: val })
 }

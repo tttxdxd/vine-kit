@@ -1,19 +1,21 @@
 import { Buffer } from 'node:buffer'
 import { describe, expect, it } from 'vitest'
 import { DesensitizedUtil } from '@vine-kit/core'
-import g from '@vine-kit/model'
+import * as g from '@vine-kit/model'
 
+g.initLanguage('zh-CN')
 // 定义账号类型
 const Account = g.meta({
-  type: g.string().min(6),
+  type: String,
   default: '',
   label: '账号',
   required: true,
+  validators: [g.gte(6)],
 })
 
 // 定义密码类型
 const Password = g.meta({
-  type: g.string(),
+  type: String,
   default: '',
   label: '密码',
   required: true,
@@ -77,7 +79,7 @@ describe('login', () => {
     const LoginModel = g.model({
       account: Account,
       password: Password.extend({
-        toJSON(val) {
+        to(val) {
           return encrypt(val)
         },
       }),
@@ -112,7 +114,7 @@ describe('login', () => {
 
     loginModel.account = ''
     expect(loginModel.validate()).toBe(false)
-    expect(loginModel.error.issues[0].message).toBe('至少需要包含 6 个字符')
+    expect(loginModel.error!.message).toBe('账号(account): 至少需要包含 6 个字符')
 
     loginModel.account = 'admin'
     expect(loginModel.validate()).toBe(false)

@@ -23,10 +23,10 @@
       ],
       "@vine-kit/core": [
         "./packages/core/src/index.ts"
-      ],
+      ], 
       "@vine-kit/model": [
         "./packages/model/src/index.ts"
-      ],
+      ]
     }
   }
 }

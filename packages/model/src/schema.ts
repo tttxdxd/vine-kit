@@ -1,50 +1,140 @@
-import { defineLazy } from '@vine-kit/core'
-import { z } from 'zod'
+import type { NonEmptyArray } from '@vine-kit/core'
+import { defineLazy, get, last, notEmptyArray } from '@vine-kit/core'
+
+import type { ISchemaType } from './types/type'
 import type { IMeta } from './types/meta'
 import type { IModel } from './types/model'
-import { Model } from './model'
 import { Meta } from './meta'
+import type { Issue } from './types/schema'
 
 export class Schema {
-  private _schema: Record<string, any>
-  private _required: Record<string, boolean>
-  private type!: z.ZodTypeAny
+  private model: IModel
+  private type!: ISchemaType
 
-  constructor(private readonly model: IModel<any>) {
-    this._schema = {}
-    this._required = {}
-    defineLazy(this, 'type', () => ({ value: z.object(this._schema).required(this._required as any) }))
+  constructor(model: IModel<any>) {
+    this.model = model
   }
 
-  attach(key: string, val: IModel<any> | IMeta<any, any>) {
-    const schema = Meta.isMeta(val)
-      ? val.type
-      : val.$schema.type
+  each(callback: (meta: IMeta, path: NonEmptyArray<string>) => boolean, parentPath: string[] = []): boolean {
+    const view = this.model.$views
 
-    this._required[key] = Meta.isMeta(val) ? val.required : true
-    this._schema[key] = schema
+    let isBreak = false
+    for (const key in view) {
+      const path = [...parentPath, key] as unknown as NonEmptyArray<string>
+      const meta = view[key]
+
+      if (Meta.isMeta(meta))
+        isBreak = !callback(meta, path)
+      else
+        isBreak = !this.each(callback, path)
+
+      if (isBreak)
+        break
+    }
+
+    return true
   }
 
   validate(val: Record<string, any>) {
-    const result = this.type.safeParse(val)
+    const issues: Issue[] = []
+    this.each((meta, path) => {
+      const value = get(val, path)
+      const isValid = meta.validate(value, last(path))
 
-    if (!result.success) {
-      // parse error
-      this.model.error = result.error
+      if (!isValid)
+        issues.push(meta.issue!)
+
+      return isValid
+    })
+
+    if (issues.length) {
+      this.model.error = ValidationError.fromSchema(issues, this.model)
+      return false
     }
 
-    return result.success
+    return true
   }
 
-  async validateAsync(val: Record<string, any>) {
-    const result = await this.type.safeParseAsync(val)
+  getViewByPath(path: NonEmptyArray<string | number>) {
+    let view: any = this.model.$views
 
-    if (!result.success) {
-      // parse error
+    for (const key of path)
+      view = view[key]
 
-      this.model.error = result.error
-    }
+    return view
+  }
+}
 
-    return result.success
+export class ValidationError extends Error {
+  static MAX_ISSUES_IN_MESSAGE = 1
+  static ISSUE_SEPARATOR = '; '
+  static UNION_SEPARATOR = ', or '
+
+  issues: any[]
+
+  constructor(message: string, issues: any[]) {
+    super(message)
+    this.name = 'ValidationError'
+    this.issues = issues
+  }
+
+  static fromSchema(issues: Issue[], model: IModel<any>) {
+    const maxIssuesInMessage = ValidationError.MAX_ISSUES_IN_MESSAGE
+    const issueSeparator = ValidationError.ISSUE_SEPARATOR
+
+    const message = issues
+      // limit max number of issues printed in the reason section
+      .slice(0, maxIssuesInMessage)
+      // format error message
+      .map(issue =>
+        ValidationError.getMessageFromIssue(issue, model),
+      )
+      // concat as string
+      .join(issueSeparator)
+
+    return new ValidationError(message, issues)
+  }
+
+  static getMessageFromIssue(issue: Issue, model: IModel<any>) {
+    const issueSeparator = ValidationError.ISSUE_SEPARATOR
+    const unionSeparator = ValidationError.UNION_SEPARATOR
+
+    // if (issue.code === 'invalid_union') {
+    //   return issue.unionErrors
+    //     .reduce<string[]>((acc, zodError) => {
+    //       const newIssues = zodError.issues
+    //         .map(issue =>
+    //           ValidationError.getMessageFromIssue(issue, model),
+    //         )
+    //         .join(issueSeparator)
+
+    //       if (!acc.includes(newIssues))
+    //         acc.push(newIssues)
+
+    //       return acc
+    //     }, [])
+    //     .join(unionSeparator)
+    // }
+
+    return ValidationError._getMessageFromIssue(issue, model)
+  }
+
+  static _getMessageFromIssue(issue: Issue, model: IModel<any>) {
+    if (notEmptyArray(issue.path))
+      return `${issue.message} at "${ValidationError.joinPath(issue.path)}"`
+
+    return issue.message
+  }
+
+  static joinPath(path: Array<string | number>): string {
+    return path.reduce<string>((acc, item) => {
+      // handle numeric indices
+      if (typeof item === 'number')
+        return `${acc}[${item.toString()}]`
+
+      // handle normal values
+      const separator = acc.length === 0 ? '' : '.'
+      return acc + separator + item
+    }, '')
   }
 }

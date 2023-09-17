@@ -17,5 +17,6 @@ export * from './promise'
 
 export * from './events'
 export * from './nanoid'
+export * from './validator'
 
 export { ObjectUtil, ArrayUtil, StringUtil, PromiseUtil, RegexUtil, DesensitizedUtil, Validator }

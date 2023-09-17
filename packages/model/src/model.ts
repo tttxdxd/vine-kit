@@ -1,24 +1,26 @@
 import { define } from '@vine-kit/core'
 import { Meta, MetaValueSymbol } from './meta'
 import type { IModel, ModelClass, ModelOptions, ModelRawShape, ModelStore, ModelViews, PartialStore } from './types/model'
+import type { ValidationError } from './schema'
 import { Schema } from './schema'
 import { bind } from './util'
 
 const ModelSymbol: unique symbol = Symbol('ModelSymbol')
 const ModelShapeSymbol = Symbol('ModelShapeSymbol')
 
-export function isModelClass(value: any): value is ModelClass<any, any> {
+export function isModelClass(value: any): value is ModelClass {
   return value && value[ModelSymbol]
 }
 
 export class Model<
-  T extends ModelRawShape, Views extends ModelViews<T> = ModelViews<T>, Store extends ModelStore<T> = ModelStore<T>,
-> {
-  readonly $views!: Views
-  readonly $store!: Store
-  readonly $parent!: ModelClass<any>
+  T extends ModelRawShape,
+> implements IModel<T> {
+  readonly $views!: ModelViews<T>
+  readonly $store!: ModelStore<T>
+  readonly $parent!: IModel
   readonly $keyPath!: string
   private $schema!: Schema
+  error?: ValidationError
 
   get $root() {
     let temp = this.$parent
@@ -42,20 +44,20 @@ export class Model<
       if (!view)
         continue
 
-      (this.$store as any)[key] = view?.fromJSON?.call(this, json[view.prop]) ?? json[view.prop]
+      (this.$store as any)[key] = view?.from?.(json[view.prop]) ?? json[view.prop]
     }
 
-    return this
+    return this as any
   }
 
-  toJSON(): Store {
+  toJSON(): ModelStore<T> {
     const result: any = {}
     const keys = Object.keys(this.$views)
 
     for (const key of keys) {
       const view = this.$views[key]
 
-      result[key] = view?.toJSON?.(view.value) ?? view.value
+      result[key] = view?.to?.(view.value, key) ?? view.value
     }
 
     return result
@@ -75,7 +77,7 @@ export class Model<
   }
 }
 
-export function model<T extends ModelRawShape, Views extends ModelViews<T>, Store extends ModelStore<T> = ModelStore<T>>(shape: T): ModelClass<T, Views, Store> {
+export function model<T extends ModelRawShape>(shape: T): ModelClass<T> {
   class _Model extends Model<any> {
     static readonly [ModelSymbol] = true
 
@@ -89,9 +91,9 @@ export function model<T extends ModelRawShape, Views extends ModelViews<T>, Stor
       const $schema = new Schema(this as any)
       const keys = Object.keys(shape)
 
+      define(this, '$parent', { value: $parent })
       define(this, '$views', { value: $views })
       define(this, '$store', { value: $store })
-      define(this, '$parent', { value: $parent })
       define(this, '$keyPath', { value: $keyPath })
       define(this, '$schema', { value: $schema })
 
@@ -100,10 +102,12 @@ export function model<T extends ModelRawShape, Views extends ModelViews<T>, Stor
         const defaultValue = data?.[key]
 
         if (Meta.isMetaClass(Constructor)) {
-          const meta = new Constructor({ model: this, prop: key })
+          const meta = new Constructor({
+            model: this as any,
+            prop: key,
+          })
 
           $views[key] = meta
-          $schema.attach(key, meta)
 
           define($store, key, (meta as any)[MetaValueSymbol](defaultValue))
           bind($store, key, meta, 'value')
@@ -116,7 +120,6 @@ export function model<T extends ModelRawShape, Views extends ModelViews<T>, Stor
           })
 
           define(this, key, { value: model })
-          $schema.attach(key, model)
         }
       }
     }

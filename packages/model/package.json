@@ -16,6 +16,11 @@
   ],
   "sideEffects": false,
   "exports": {
+    "./locales/*": {
+      "types": "./dist/locales/*.d.ts",
+      "import": "./dist/locales/*.mjs",
+      "require": "./dist/locales/*.cjs"
+    },
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
@@ -33,7 +38,6 @@
     "stub": "unbuild --stub"
   },
   "dependencies": {
-    "@vine-kit/core": "workspace:*",
-    "zod": "^3.22.2"
+    "@vine-kit/core": "workspace:*"
   }
 }

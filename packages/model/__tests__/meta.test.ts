@@ -1,13 +1,12 @@
 import { describe, expect, it } from 'vitest'
-import { z } from 'zod'
 
 import g from '@vine-kit/model'
 
 describe('meta', () => {
   // 普通 meta
-  it('meta', () => {
+  it('普通 meta', () => {
     const Username = g.meta({
-      type: z.string(),
+      type: String,
       default: '小明',
     })
 
@@ -24,9 +23,11 @@ describe('meta', () => {
   })
 
   // 定制 meta
-  it('meta special', () => {
+  it('定制 meta', () => {
     const Username = g.meta({
-      type: z.string(),
+      type: String,
+      prop: 'name',
+      label: '姓名',
       default: '小明',
       required: true,
       readonly: true,
@@ -36,6 +37,10 @@ describe('meta', () => {
 
     const username = new Username()
 
+    expect(Username).toBeInstanceOf(Function)
+    expect(username.value).toBe('小明')
+    expect(username.prop).toBe('name')
+    expect(username.label).toBe('姓名')
     expect(username.required).toBe(true)
     expect(username.readonly).toBe(true)
     expect(username.disabled).toBe(true)
@@ -44,7 +49,7 @@ describe('meta', () => {
 
   it('meta extend', () => {
     const Username = g.meta({
-      type: z.string(),
+      type: String,
       default: '2',
     })
 
@@ -58,12 +63,18 @@ describe('meta', () => {
     expect(username.required).toBe(true)
   })
 
-  it('meta type', () => {
-    const Username = g.meta({
-      type: z.string(),
-      default: '2',
-    })
+  it('meta alias', () => {
+    const Username = g.string('小明')
 
     const username = new Username()
+
+    expect(Username).toBeInstanceOf(Function)
+    expect(username.value).toBe('小明')
+    expect(username.prop).toBe('')
+    expect(username.label).toBe('')
+    expect(username.required).toBe(false)
+    expect(username.readonly).toBe(false)
+    expect(username.disabled).toBe(false)
+    expect(username.hidden).toBe(false)
   })
 })

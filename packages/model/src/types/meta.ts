@@ -1,10 +1,17 @@
-import type * as z from 'zod'
+import type { Validator } from '../validator'
+import type { IModel } from './model'
+import type { Issue } from './schema'
+import type { IValidator } from './validator'
 
-export type MetaRawOptions<Z extends z.ZodTypeAny> = {
-  /** 类型 */
-  type: Z
+export type MetaType = NumberConstructor | StringConstructor | BooleanConstructor
+export type MetaValue<T extends MetaType> = T extends NumberConstructor ? number :
+  T extends StringConstructor ? string :
+    T extends BooleanConstructor ? boolean :
+      T extends ObjectConstructor ? object : never
 
-  computed?: (this: any) => z.infer<Z>
+export interface IMetaRawOptions<T extends MetaType> {
+  default?: MetaValue<T>
+  computed?: (this: any) => MetaValue<T>
 
   /** 字段 prop */
   prop?: string
@@ -21,53 +28,25 @@ export type MetaRawOptions<Z extends z.ZodTypeAny> = {
   hidden?: boolean
 
   /** 字段输出格式化 */
-  formatter?: (this: any, value: z.infer<Z>, key: string, data: any) => string
+  formatter?: (this: any, value: MetaValue<T>, key: string, data: any) => string
 
-  fromJSON?: <T>(this: any, value: any) => z.infer<Z>
-  toJSON?: <T>(this: any, value: z.infer<Z>, key: string) => T
+  /** 校验 */
+  validators?: IValidator<T>[]
 
-  model?: any
-} & (Z extends z.ZodDefault<any> ?
-  any : {
-    default: z.infer<Z>
-  })
+  from?: (this: any, value: any) => MetaValue<T>
+  to?: (this: any, value: MetaValue<T>, key: string) => MetaValue<T>
 
-export interface MetaRawShape<Z extends z.ZodTypeAny> {
-  /** 类型 */
-  type: Z
-
-  default: z.infer<Z>
-  computed?: (this: any) => z.infer<Z>
-
-  /** 字段 prop */
-  prop: string
-  /** 字段 */
-  label: string
-
-  /** 字段是否必填 */
-  required: boolean
-  /** 字段是否只读 */
-  readonly: boolean
-  /** 字段是否禁用 */
-  disabled: boolean
-  /** 字段是否隐藏 */
-  hidden: boolean
-
-  /** 字段输出格式化 */
-  formatter?: (this: any, value: z.infer<Z>, key: string) => string
-  fromJSON?: <T>(this: any, value: any) => z.infer<Z>
-  toJSON?: (this: any, value: z.infer<Z>, key: string) => any
-
-  model?: any
+  model?: IModel
 }
 
-export interface IMeta<
-  Z extends z.ZodTypeAny,
-  Shape extends MetaRawShape<Z>,
-> {
-  readonly shape: Shape
-  readonly type: z.ZodTypeAny
-  readonly value: z.infer<Z>
+export type IMetaOptions<T extends MetaType> = {
+  /** 类型 */
+  type: T
+} & IMetaRawOptions<T>
+
+export interface IMeta<T extends MetaType = any> {
+  readonly type: MetaType
+  readonly value: MetaValue<T>
 
   readonly label: string
   readonly prop: string
@@ -78,32 +57,36 @@ export interface IMeta<
   readonly required: boolean
 
   readonly text: string
+  readonly validators: Validator[]
 
-  formatter?: (this: any, value: z.infer<Z>, key: string, data: any) => string
+  readonly error?: string
+  readonly issue?: Issue
+  validate(this: any, value: MetaValue<T>, key: string): boolean
+
+  formatter?: (this: any, value: MetaValue<T>, key: string, data: any) => string
+  from?: <T>(this: any, value: any) => T
+  to?: <T>(this: any, value: T, key: string) => T
   readonly model: any
 }
 
 export interface MetaClass<
-  Z extends z.ZodTypeAny,
-  Shape extends MetaRawShape<Z>,
+  T extends MetaType = any,
 > {
-  new<NShape extends MetaRawShape<Z>, T extends Omit<MetaRawOptions<Z>, 'type'>>(options?: T): IMeta<Z, NShape>
+  new(options?: IMetaRawOptions<T>): IMeta<T>
 
   /**
    * 扩展字段元数据类型
-   * @param newShape
+   * @param options
    * @returns
    */
-  extend<
-    EShape extends MetaRawShape<Z>,
-  >(shape: Partial<Omit<MetaRawShape<Z>, 'type'>>): MetaClass<Z, EShape>
+  extend(options: IMetaRawOptions<T>): MetaClass<T>
 
-  default(val: z.infer<Z>): MetaClass<Z, Shape>
-  label(val: string): MetaClass<Z, Shape>
-  readonly(val: boolean): MetaClass<Z, Shape>
-  disabled(val: boolean): MetaClass<Z, Shape>
-  hidden(val: boolean): MetaClass<Z, Shape>
-  required(val: boolean): MetaClass<Z, Shape>
+  default(val: MetaValue<T>): MetaClass<T>
+  label(val: string): MetaClass<T>
+  readonly(val?: boolean): MetaClass<T>
+  disabled(val?: boolean): MetaClass<T>
+  hidden(val?: boolean): MetaClass<T>
+  required(val?: boolean): MetaClass<T>
 }
 
-export type toIMeta<T extends MetaClass<any, any>> = T extends MetaClass<infer Z, infer Shape> ? IMeta<Z, Shape> : never
+export type toIMeta<T extends MetaClass> = T extends MetaClass<infer T> ? IMeta<T> : never

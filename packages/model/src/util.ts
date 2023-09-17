@@ -1,12 +1,26 @@
-import * as z from 'zod'
+import { isBoolean, isNumber, isString, isUndefined } from '@vine-kit/core'
+import type { MetaType } from './types/meta'
+import { ParsedType } from './types/schema'
 
-export type identity<T> = T
+export function validateMetaType(val: string | number | boolean, type: MetaType) {
+  return (val).constructor === type
+}
 
-export function getDefaultValue<T extends z.ZodDefault<any>>(type: T): z.infer<T> {
-  if (type._def.typeName !== z.ZodFirstPartyTypeKind.ZodDefault)
-    throw new Error('getDefaultValue: type is not ZodDefault')
+export function getDefaultValue(type: MetaType) {
+  return type.prototype.valueOf()
+}
 
-  return type.parse(undefined)
+export function toParsedType(val: unknown): ParsedType {
+  if (isUndefined(val))
+    return ParsedType.undefined
+  if (isString(val))
+    return ParsedType.string
+  if (isNumber(val))
+    return ParsedType.number
+  if (isBoolean(val))
+    return ParsedType.boolean
+
+  return ParsedType.unknown
 }
 
 /**
@@ -21,4 +35,13 @@ export function bind(origin: any, key: string, target: any, targetKey: string = 
       origin[key] = value
     },
   })
+}
+
+export function joinValues<T extends any[]>(
+  array: T,
+  separator = ' | ',
+): string {
+  return array
+    .map(val => (typeof val === 'string' ? `'${val}'` : val))
+    .join(separator)
 }

@@ -41,7 +41,7 @@ import { isFunction } from '../general'
  * // Replace `memoize.Cache`.
  * memoize.Cache = WeakMap
  */
-export function memoize<T extends (...args: any) => any>(func: T, resolver?: (...args: any) => any) {
+export function memoize<T extends (...args: any) => any>(func: T, resolver?: (...args: Parameters<T>) => string) {
   if (!isFunction(func) || !isFunction(resolver))
     throw new TypeError('Expected a function')
 

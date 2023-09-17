@@ -50,7 +50,7 @@ export function isPromise<T = any>(val: unknown): val is Promise<T> {
   return isObject(val) && isFunction(val.then) && isFunction(val.catch)
 }
 export const isNaN = (val: any): boolean => isNumber(val) && Number.isNaN(val)
-export const isArrayLike = (val: unknown): val is ArrayLike<any> => isObject(val) && isNumber(val.length)
+export const isArrayLike = (val: any): val is ArrayLike<any> => !isNullish(val) && isNumber(val.length)
 
 export const isConstructor = (val: any): boolean => val === 'constructor'
 export function isInstanceOf<T extends new (...args: any[]) => any>(val: unknown,

@@ -1,27 +1,18 @@
-import { readdirSync, statSync } from 'node:fs'
+import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 
-function r(p: string, subModule: boolean = false) {
-  if (subModule)
-    return resolve(__dirname, '../packages', p, 'src/index.ts')
-  return resolve(__dirname, '../packages', p)
-}
+const rootPath = resolve(__dirname, '../')
 
-const dirs = readdirSync(r(''))
-const alias: Record<string, string> = {
-  'vine-kit': r('vine-kit', true),
-}
+const tsPath = resolve(rootPath, 'tsconfig.json')
+const tsconfig = JSON.parse(readFileSync(tsPath, 'utf8'))
+const paths: any = tsconfig.compilerOptions.paths
+const keys = Object.keys(paths)
+const alias: Record<string, string> = {}
 
-for (const dir of dirs) {
-  if (dir === 'vine-kit')
-    continue
+keys.forEach((key) => {
+  const path = paths[key][0]
 
-  const key = `@vine-kit/${dir}`
-  if (
-    !(key in alias)
-    && statSync(r(dir)).isDirectory()
-  )
-    alias[key] = r(dir, true)
-}
+  alias[key] = resolve(rootPath, path)
+})
 
 export { alias }
