@@ -97,7 +97,7 @@ export function set(object: any, path: string | string[], value: any) {
   const keys = isString(path) ? path.split('.') : [...path]
   let result = object
   for (const key of keys) {
-    if (!isObject(result))
+    if (!isObject(result[key]))
       break
     result = result[key]
   }

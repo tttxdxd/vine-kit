@@ -38,6 +38,26 @@ interface InvalidTypeIssue extends IssueBase {
   received: ParsedType
 }
 
+export type StringValidation =
+  | 'email'
+  | 'url'
+  | 'emoji'
+  | 'uuid'
+  | 'regex'
+  | 'cuid'
+  | 'cuid2'
+  | 'ulid'
+  | 'datetime'
+  | 'ip'
+  | { includes: string; position?: number }
+  | { startsWith: string }
+  | { endsWith: string }
+
+export interface InvalidStringIssue extends IssueBase {
+  code: typeof IssueCode.invalid_string
+  validation: StringValidation
+}
+
 interface InvalidLiteralIssue extends IssueBase {
   code: IssueCode.invalid_literal
   expected: unknown
@@ -67,6 +87,7 @@ interface CustomIssue extends IssueBase {
 type IssueOptionalMessage =
   | InvalidTypeIssue
   | InvalidLiteralIssue
+  | InvalidStringIssue
   | TooSmallIssue
   | TooBigIssue
   | CustomIssue

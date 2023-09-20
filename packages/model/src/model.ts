@@ -1,7 +1,7 @@
-import { define } from '@vine-kit/core'
+import { define, defineLazy, flatten, get, last, notUndefined, set, unique } from '@vine-kit/core'
 import { Meta, MetaValueSymbol } from './meta'
 import type { IModel, ModelClass, ModelOptions, ModelRawShape, ModelStore, ModelViews, PartialStore } from './types/model'
-import type { ValidationError } from './schema'
+import type { ValidationError } from './error'
 import { Schema } from './schema'
 import { bind } from './util'
 
@@ -19,7 +19,7 @@ export class Model<
   readonly $store!: ModelStore<T>
   readonly $parent!: IModel
   readonly $keyPath!: string
-  private $schema!: Schema
+  readonly $schema!: Schema
   error?: ValidationError
 
   get $root() {
@@ -35,30 +35,34 @@ export class Model<
     return this.$schema.validate(this.$store)
   }
 
+  reset() {
+    this.$schema.each((meta, path) => {
+      set(this.$store, path, meta.default)
+
+      return true
+    })
+  }
+
   fromJSON(json: PartialStore<T>) {
-    const keys = Object.keys(json)
+    this.$schema.each((meta, path) => {
+      const value = get(json, path) ?? meta?.from?.(meta.value)
 
-    for (const key of keys) {
-      const view = this.$views[key]
+      if (notUndefined(value))
+        set(this.$store, path, value)
 
-      if (!view)
-        continue
-
-      (this.$store as any)[key] = view?.from?.(json[view.prop]) ?? json[view.prop]
-    }
-
+      return true
+    })
     return this as any
   }
 
   toJSON(): ModelStore<T> {
     const result: any = {}
-    const keys = Object.keys(this.$views)
+    this.$schema.each((meta, path) => {
+      const value = meta?.to?.(meta.value, last(path)) ?? meta.value
 
-    for (const key of keys) {
-      const view = this.$views[key]
-
-      result[key] = view?.to?.(view.value, key) ?? view.value
-    }
+      set(result, path, value)
+      return true
+    })
 
     return result
   }
@@ -77,7 +81,11 @@ export class Model<
   }
 }
 
-export function model<T extends ModelRawShape>(shape: T): ModelClass<T> {
+export function model<T extends ModelRawShape>(shape: T): ModelClass<T>
+export function model<T extends ModelRawShape>(shape: T, options: { scene?: string }): ModelClass<T>
+export function model<T extends ModelRawShape>(shape: T, options?: { scene?: string }): ModelClass<T> {
+  const scene = options?.scene
+
   class _Model extends Model<any> {
     static readonly [ModelSymbol] = true
 
@@ -105,6 +113,7 @@ export function model<T extends ModelRawShape>(shape: T): ModelClass<T> {
           const meta = new Constructor({
             model: this as any,
             prop: key,
+            scene,
           })
 
           $views[key] = meta
@@ -117,6 +126,7 @@ export function model<T extends ModelRawShape>(shape: T): ModelClass<T> {
           const model = new Constructor(defaultValue, {
             parent: this as any,
             keyPath: key,
+            scene,
           })
 
           define(this, key, { value: model })
@@ -124,6 +134,17 @@ export function model<T extends ModelRawShape>(shape: T): ModelClass<T> {
       }
     }
   }
+
+  defineLazy(_Model, '$scenes', () => {
+    const $scenes: any = {}
+    const keys = unique(flatten(Object.values(shape).map(v => Object.keys(v.$scenes))))
+
+    if (keys.length) {
+      for (const key of keys)
+        $scenes[key] = model(shape, { scene: key })
+    }
+    return $scenes
+  })
 
   return _Model as any
 }

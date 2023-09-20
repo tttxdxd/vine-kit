@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import g from '@vine-kit/model'
+import * as g from '@vine-kit/model'
 
 const Username = g.meta({
   type: String,
@@ -119,5 +119,17 @@ describe('model', () => {
     expect(user.role.weight).toBe(130)
     expect(user.$store.role.title).toBe('学生')
     expect(user.$store.role.weight).toBe(130)
+  })
+
+  it('model 校验', () => {
+    const UserModel = g.model({
+      /** 用户名称 */
+      username: Username.default('小明'),
+      age: Age.default(13),
+    })
+
+    const user = new UserModel()
+
+    expect(user.validate()).toBe(true)
   })
 })

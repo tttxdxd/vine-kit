@@ -4,6 +4,10 @@ export function isEmail(val: string): boolean {
   return RegexUtil.test(RegexUtil.EMAIL, val)
 }
 
+export function isURL(val: string): boolean {
+  return RegexUtil.test(RegexUtil.URL, val)
+}
+
 export function isUsername(val: string): boolean {
   return RegexUtil.test(RegexUtil.USERNAME, val)
 }

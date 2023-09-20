@@ -1,4 +1,4 @@
-import { isFunction } from '../general'
+import { isFunction, notUndefined } from '../general'
 
 /**
  * Creates a function that memoizes the result of `func`. If `resolver` is
@@ -42,7 +42,7 @@ import { isFunction } from '../general'
  * memoize.Cache = WeakMap
  */
 export function memoize<T extends (...args: any) => any>(func: T, resolver?: (...args: Parameters<T>) => string) {
-  if (!isFunction(func) || !isFunction(resolver))
+  if (!isFunction(func) || (notUndefined(resolver) && !isFunction(resolver)))
     throw new TypeError('Expected a function')
 
   const memoized = function (this: ThisParameterType<T>, ...args: Parameters<T>): ReturnType<T> {

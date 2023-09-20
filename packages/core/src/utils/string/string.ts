@@ -48,10 +48,45 @@ export function hasBlank(val: string[]): boolean {
 /**
  * 检查字符串是否都为数字组成
  * @param str
- * @returns
  */
 export function isNumeric(str: string): boolean {
   return !isEmpty(str) && every(str, Char.isNumber)
+}
+
+/**
+ * 检查字符串是否以指定的字符串开始
+ * @param str 要检查的字符串
+ * @param searchString 要搜索的字符串。
+ * @param position 可选参数，指定从字符串的哪个位置开始搜索，默认为 0。
+ */
+export function isStartsWith(str: string, searchString: string, position: number = 0) {
+  str = String(str)
+  if (searchString.length === 0)
+    return true
+  if (str.length < searchString.length)
+    return false
+  if (position < 0)
+    position = 0
+
+  return str.substring(position, position + searchString.length) === searchString
+}
+
+/**
+ * 检查字符串是否以指定的字符串结束
+ * @param str 要检查的字符串
+ * @param searchString 要搜索的字符串。
+ * @param endPosition 可选参数，指定从字符串的哪个位置结束搜索，默认为要检查的字符串的长度。
+ */
+export function isEndsWith(str: string, searchString: string, endPosition: number = str.length) {
+  str = String(str)
+  if (searchString.length === 0)
+    return true
+  if (str.length < searchString.length)
+    return false
+  if (endPosition > str.length)
+    endPosition = str.length
+
+  return str.substring(endPosition - searchString.length, endPosition) === searchString
 }
 
 export enum TrimMode {

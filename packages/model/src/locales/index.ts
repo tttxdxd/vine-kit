@@ -1,8 +1,8 @@
 import { get, isPlainObject, isString, memoize, notEmptyArray } from '@vine-kit/core'
 
-import { ValidationError } from '../schema'
+import { ValidationError } from '../error'
 import { IssueCode, ParsedType } from '../types/schema'
-import { joinValues } from '../util'
+
 import en from './en.json'
 import zh from './zh-CN.json'
 

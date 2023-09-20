@@ -10,7 +10,14 @@ const Account = g.meta({
   default: '',
   label: '账号',
   required: true,
-  validators: [g.gte(6)],
+  validators: [g.min(6)],
+}, {
+  Login: {
+    label: '登录账号',
+  },
+  Register: {
+    label: '注册账号',
+  },
 })
 
 // 定义密码类型
@@ -34,7 +41,7 @@ const LoginModel = g.model({
 describe('login', () => {
   it('渲染登录表单', () => {
     const loginModel = new LoginModel()
-
+    LoginModel.$scenes.Login
     expect(loginModel.$views.account).toMatchObject({
       label: '账号',
       required: true,
@@ -106,7 +113,7 @@ describe('login', () => {
       account: Account,
       password: Password,
     })
-    const loginModel = new LoginModel()
+    const loginModel = new LoginModel.$scenes.Login()
 
     loginModel.account = 'adm3in'
     loginModel.password = '123456'
@@ -114,7 +121,7 @@ describe('login', () => {
 
     loginModel.account = ''
     expect(loginModel.validate()).toBe(false)
-    expect(loginModel.error!.message).toBe('账号(account): 至少需要包含 6 个字符')
+    expect(loginModel.error!.message).toBe('登录账号(account): 至少需要包含 6 个字符')
 
     loginModel.account = 'admin'
     expect(loginModel.validate()).toBe(false)

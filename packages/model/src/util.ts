@@ -1,5 +1,5 @@
 import { isBoolean, isNumber, isString, isUndefined } from '@vine-kit/core'
-import type { MetaType } from './types/meta'
+import type { MetaType, MetaValueToType } from './types/meta'
 import { ParsedType } from './types/schema'
 
 export function validateMetaType(val: string | number | boolean, type: MetaType) {
@@ -8,6 +8,10 @@ export function validateMetaType(val: string | number | boolean, type: MetaType)
 
 export function getDefaultValue(type: MetaType) {
   return type.prototype.valueOf()
+}
+
+export function toMetaType<T extends string | number | boolean>(val: T): MetaValueToType<T> {
+  return (val).constructor as any
 }
 
 export function toParsedType(val: unknown): ParsedType {

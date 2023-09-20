@@ -1,16 +1,15 @@
-import { define, defineLazy } from '@vine-kit/core'
+import type { NonEmptyArray } from '@vine-kit/core'
+import { define, defineLazy, isFunction, isUndefined, keyBy } from '@vine-kit/core'
 
-import type { IMeta, IMetaOptions, IMetaRawOptions, MetaClass, MetaType, MetaValue } from './types/meta'
-import { getDefaultValue, toParsedType, validateMetaType } from './util'
-import type { IModel } from './types/model'
+import type { IMeta, IMetaOptions, IMetaRawOptions, IMetaScenes, MetaClass, MetaType, MetaValue, MetaValueToType } from './types/meta'
+import { type Issue } from './types/schema'
+import { getDefaultValue, toMetaType, validateMetaType } from './util'
 import { Validator } from './validator'
-import { type Issue, IssueCode } from './types/schema'
-import { errorMap } from './locales'
 
 const MetaSymbol: unique symbol = Symbol('MetaSymbol')
 export const MetaValueSymbol: unique symbol = Symbol('MetaValueSymbol')
 
-export function isMetaClass(value: any): value is MetaClass {
+export function isMetaClass(value: any): value is MetaClass<any> {
   return value && value[MetaSymbol]
 }
 
@@ -31,7 +30,10 @@ export class Meta<T extends MetaType> {
     }
   }
 
-  constructor(options: IMetaOptions<T>) {
+  constructor(options: IMetaOptions<T>, scenes?: IMetaScenes<T>) {
+    if (options.scene)
+      options = scenes?.[options.scene] ? { ...options, ...scenes[options.scene] } : options
+
     if (!options.type)
       throw new Error('Meta: type is required')
 
@@ -55,7 +57,7 @@ export class Meta<T extends MetaType> {
     }
 
     this.prop = options.prop ?? ''
-    this.label = options.label ?? ''
+    define(this, 'label', isFunction(options.label) ? () => (options.label as ((...args: any[]) => string))!.call(model, this.value, this.prop) : options.label ?? '')
 
     defineLazy(this, 'value', this[MetaValueSymbol].bind(this))
     define(this, 'required', required)
@@ -72,6 +74,9 @@ export class Meta<T extends MetaType> {
     define(this, 'to', {
       value: options.to?.bind(model),
     })
+    define(this, 'options', {
+      value: options.options,
+    })
   }
 
   prop!: string
@@ -80,6 +85,11 @@ export class Meta<T extends MetaType> {
   error?: string
   issue?: Issue
   validators!: Validator[]
+
+  required!: boolean
+  readonly!: boolean
+  disabled!: boolean
+  hidden!: boolean
 
   get type() {
     return this.shape.type
@@ -97,6 +107,9 @@ export class Meta<T extends MetaType> {
   }
 
   validate(val: any, key: string) {
+    if (isUndefined(val) && !this.required)
+      return true
+
     this.issue = Validator.validate(this.validators, val, [key])
     this.error = this.issue?.message
 
@@ -114,44 +127,61 @@ export class Meta<T extends MetaType> {
  * @param shape
  * @returns
  */
+export function meta<T extends MetaType, Options = never>(shape: IMetaOptions<T, Options>): MetaClass<T>
 export function meta<
   T extends MetaType,
->(shape: IMetaOptions<T>): MetaClass<T> {
+  Scenes extends IMetaScenes<T>,
+>(shape: IMetaOptions<T>, scenes: Scenes): MetaClass<T, Scenes>
+export function meta<
+  T extends MetaType,
+  Scenes extends IMetaScenes<T>,
+>(shape: IMetaOptions<T>, scenes?: Scenes): MetaClass<T, Scenes> {
   class _Meta extends Meta<T> {
     static readonly [MetaSymbol] = true
 
     constructor(newShape?: any) {
-      super({ ...shape, ...newShape })
+      super({ ...shape, ...newShape }, scenes)
     }
 
     static extend(newShape: any) {
-      return meta({ ...shape, ...newShape })
+      return meta({ ...shape, ...newShape }, scenes!)
     }
 
     static default(val: any) {
-      return meta({ ...shape, default: val })
+      return meta({ ...shape, default: val }, scenes!)
     }
 
     static label(val: string) {
-      return meta({ ...shape, label: val })
+      return meta({ ...shape, label: val }, scenes!)
     }
 
     static readonly(val: boolean = true) {
-      return meta({ ...shape, readonly: val })
+      return meta({ ...shape, readonly: val }, scenes!)
     }
 
     static disabled(val: boolean = true) {
-      return meta({ ...shape, disabled: val })
+      return meta({ ...shape, disabled: val }, scenes!)
     }
 
     static hidden(val: boolean = true) {
-      return meta({ ...shape, hidden: val })
+      return meta({ ...shape, hidden: val }, scenes!)
     }
 
     static required(val: boolean = true) {
-      return meta({ ...shape, required: val })
+      return meta({ ...shape, required: val }, scenes!)
     }
   }
+
+  defineLazy(_Meta, '$scenes', () => {
+    const $scenes: any = {}
+
+    if (scenes) {
+      for (const key in scenes)
+        $scenes[key] = meta({ ...shape, ...scenes[key] })
+    }
+    return $scenes
+  })
+  defineLazy(_Meta, '$options', () => shape.options)
 
   return _Meta as any
 }
@@ -164,6 +194,40 @@ export function number(val: number = 0) {
   return meta({ type: Number, default: val })
 }
 
+/**
+ *
+ * @param val
+ * @returns
+ */
 export function boolean(val: boolean = false) {
   return meta({ type: Boolean, default: val })
+}
+
+/**
+ * 定义字典类型
+ * @param shape
+ * @returns
+ * @example
+ * const Switch = dict({
+ *  type: Boolean,
+ *  options: [{ value: false, label: '关' }, { value: true, label: '开' }]
+ * })
+ */
+export function dict<
+  T extends MetaType,
+  Scenes extends IMetaScenes<T> = IMetaScenes<T>,
+  Options extends { value: MetaValue<T>; label: string; default?: boolean }[] = { value: MetaValue<T>; label: string; default?: boolean }[]>(
+  shape: IMetaOptions<T, Options>,
+) {
+  const options = shape.options!
+  const map = keyBy(options, 'value')
+  const defaultValue: any = options.find(({ default: d }) => d)?.value ?? options[0].value
+
+  return meta({
+    default: defaultValue,
+    formatter(val) {
+      return map[String(val)].label
+    },
+    ...shape,
+  }) as MetaClass<T, Scenes, Options>
 }
