@@ -1,15 +1,18 @@
 import type { Validator } from '../validator'
 import type { MetaType } from './meta'
 
-declare const StringSymbol: unique symbol
-declare const NumberSymbol: unique symbol
-declare const BooleanSymbol: unique symbol
+export declare const StringSymbol: unique symbol
+export declare const NumberSymbol: unique symbol
+export declare const BooleanSymbol: unique symbol
+export declare const AsyncSymbol: unique symbol
 
-export type IValidatorString = Validator & { [StringSymbol]: true }
-export type IValidatorNumber = Validator & { [NumberSymbol]: true }
-export type IValidatorBoolean = Validator & { [BooleanSymbol]: true }
+export interface IValidatorString extends Validator { [StringSymbol]: true }
+export interface IValidatorNumber extends Validator { [NumberSymbol]: true }
+export interface IValidatorBoolean extends Validator { [BooleanSymbol]: true }
+export interface IValidatorAsync extends Validator { [AsyncSymbol]: true }
 
 export type IValidatorType = IValidatorString & IValidatorNumber & IValidatorBoolean
+export type IValidatorTypeAsync = IValidatorString & IValidatorNumber & IValidatorBoolean & IValidateAsync
 
 export type IValidator<T extends MetaType> = T extends StringConstructor
   ? IValidatorString
@@ -18,3 +21,9 @@ export type IValidator<T extends MetaType> = T extends StringConstructor
     : T extends BooleanConstructor
       ? IValidatorBoolean
       : never
+
+export type IValidateSync = (val: any) => boolean
+export type IValidateAsync = (val: any) => Promise<boolean>
+export type IValidate = IValidateSync | IValidateAsync
+
+export type IsAsync<T extends any[]> = T[number] extends (IValidatorTypeAsync) ? true : false

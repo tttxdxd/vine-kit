@@ -1,17 +1,41 @@
-import { get, isPlainObject, isString, memoize, notEmptyArray } from '@vine-kit/core'
+import { get, isPlainObject, isString, memoize } from '@vine-kit/core'
 
-import { ValidationError } from '../error'
-import { IssueCode, ParsedType } from '../types/schema'
-
+import { joinValues } from '../util'
 import en from './en.json'
-import zh from './zh-CN.json'
+
+export enum IssueCode {
+  invalid_type = 'invalid_type',
+  invalid_literal = 'invalid_literal',
+  custom = 'custom',
+  // invalid_union = 'invalid_union',
+  // invalid_union_discriminator = 'invalid_union_discriminator',
+  invalid_enum_value = 'invalid_enum_value',
+  // unrecognized_keys = 'unrecognized_keys',
+  // invalid_arguments = 'invalid_arguments',
+  // invalid_return_type = 'invalid_return_type',
+  // invalid_date = 'invalid_date',
+  invalid_string = 'invalid_string',
+  too_small = 'too_small',
+  too_big = 'too_big',
+  // invalid_intersection_types = 'invalid_intersection_types',
+  // not_multiple_of = 'not_multiple_of',
+  // not_finite = 'not_finite',
+}
+
+export enum ParsedType {
+  string = 'string',
+  number = 'number',
+  boolean = 'boolean',
+  undefined = 'undefined',
+  unknown = 'unknown',
+}
 
 type Lang = 'en' | 'zh-CN'
+type Translation = Record<string, any>
+export const defaultTranslation: Translation = en
+
 let lang: Lang = 'en'
-const translation: any = {
-  'en': en,
-  'zh-CN': zh,
-}
+let translation: Translation = defaultTranslation
 
 const formatters: Record<string, any> = {
   datetime: memoize((_lang: Lang, date: Date) => {
@@ -20,9 +44,14 @@ const formatters: Record<string, any> = {
 }
 
 export function t(key: string, options?: Record<string, any>) {
-  const str = get(translation[lang], key)
+  const str = get(translation, key)
   if (!isString(str))
     throw new Error(`Missing translation for key "${key}"`)
+
+  return template(str, options)
+}
+
+export function template(str: string, options?: Record<string, any>) {
   if (!isPlainObject(options))
     return str
 
@@ -37,18 +66,15 @@ export function t(key: string, options?: Record<string, any>) {
   })
 }
 
-export function initLanguage(language: Lang) {
-  if (language === 'en')
-    return
+export function defineTranslation(options: { lang: Lang; translation: Translation }) {
+  return () => options
+}
 
-  lang = language
+export function setTranslation(initTranslation: () => { lang: Lang; translation: Translation }) {
+  const { lang: lng, translation: trans } = initTranslation()
 
-  ValidationError._getMessageFromIssue = (issue, model) => {
-    if (notEmptyArray(issue.path))
-      return `${model.$schema.getViewByPath(issue.path)?.label ?? ''}(${ValidationError.joinPath(issue.path)}): ${issue.message}`
-
-    return issue.message
-  }
+  lang = lng
+  translation = trans
 }
 
 export function errorMap(issue: any, _ctx?: any) {
@@ -83,12 +109,12 @@ export function errorMap(issue: any, _ctx?: any) {
     //     options: joinValues(issue.options),
     //   })
     //   break
-    // case IssueCode.invalid_enum_value:
-    //   message = t('errors.invalid_enum_value', {
-    //     options: joinValues(issue.options),
-    //     received: issue.received,
-    //   })
-    //   break
+    case IssueCode.invalid_enum_value:
+      message = t('errors.invalid_enum_value', {
+        options: joinValues(issue.options),
+        received: issue.received,
+      })
+      break
     // case IssueCode.invalid_arguments:
     //   message = t('errors.invalid_arguments')
     //   break

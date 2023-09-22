@@ -1,12 +1,11 @@
-import { define, defineLazy, flatten, get, last, notUndefined, set, unique } from '@vine-kit/core'
+import { define, defineLazy, flatten, get, last, notUndefined, set, some, unique } from '@vine-kit/core'
 import { Meta, MetaValueSymbol } from './meta'
-import type { IModel, ModelClass, ModelOptions, ModelRawShape, ModelStore, ModelViews, PartialStore } from './types/model'
+import type { IModel, ModelClass, ModelIsAsync, ModelOptions, ModelRawShape, ModelStore, ModelViews, PartialStore } from './types/model'
 import type { ValidationError } from './error'
 import { Schema } from './schema'
 import { bind } from './util'
 
 const ModelSymbol: unique symbol = Symbol('ModelSymbol')
-const ModelShapeSymbol = Symbol('ModelShapeSymbol')
 
 export function isModelClass(value: any): value is ModelClass {
   return value && value[ModelSymbol]
@@ -29,10 +28,6 @@ export class Model<
       temp = temp.$parent
 
     return temp
-  }
-
-  validate() {
-    return this.$schema.validate(this.$store)
   }
 
   reset() {
@@ -81,9 +76,9 @@ export class Model<
   }
 }
 
-export function model<T extends ModelRawShape>(shape: T): ModelClass<T>
-export function model<T extends ModelRawShape>(shape: T, options: { scene?: string }): ModelClass<T>
-export function model<T extends ModelRawShape>(shape: T, options?: { scene?: string }): ModelClass<T> {
+export function model<T extends ModelRawShape, Async = ModelIsAsync<T>>(shape: T): ModelClass<T, Async>
+export function model<T extends ModelRawShape, Async = ModelIsAsync<T>>(shape: T, options: { scene?: string }): ModelClass<T, Async>
+export function model<T extends ModelRawShape, Async = ModelIsAsync<T>>(shape: T, options?: { scene?: string }): ModelClass<T, Async> {
   const scene = options?.scene
 
   class _Model extends Model<any> {
@@ -133,8 +128,22 @@ export function model<T extends ModelRawShape>(shape: T, options?: { scene?: str
         }
       }
     }
+
+    validate() {
+      return this.$schema.validate(this.$store)
+    }
+
+    async validateAsync() {
+      return this.$schema.validateAsync(this.$store)
+    }
   }
 
+  const async = some(Object.values(shape), v => Boolean(v.$async))
+
+  if (async)
+    delete (_Model.prototype as any).validate
+
+  define(_Model, '$async', async)
   defineLazy(_Model, '$scenes', () => {
     const $scenes: any = {}
     const keys = unique(flatten(Object.values(shape).map(v => Object.keys(v.$scenes))))

@@ -1,6 +1,6 @@
 import { isBoolean, isNumber, isString, isUndefined } from '@vine-kit/core'
 import type { MetaType, MetaValueToType } from './types/meta'
-import { ParsedType } from './types/schema'
+import { ParsedType } from './locales'
 
 export function validateMetaType(val: string | number | boolean, type: MetaType) {
   return (val).constructor === type

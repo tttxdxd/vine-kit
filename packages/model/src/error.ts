@@ -33,8 +33,8 @@ export class ValidationError extends Error {
   }
 
   static getMessageFromIssue(issue: Issue, model: IModel<any>) {
-    const issueSeparator = ValidationError.ISSUE_SEPARATOR
-    const unionSeparator = ValidationError.UNION_SEPARATOR
+    // const issueSeparator = ValidationError.ISSUE_SEPARATOR
+    // const unionSeparator = ValidationError.UNION_SEPARATOR
 
     // if (issue.code === 'invalid_union') {
     //   return issue.unionErrors
@@ -56,7 +56,7 @@ export class ValidationError extends Error {
     return ValidationError._getMessageFromIssue(issue, model)
   }
 
-  static _getMessageFromIssue(issue: Issue, model: IModel<any>) {
+  static _getMessageFromIssue(issue: Issue, _model: IModel<any>) {
     if (notEmptyArray(issue.path))
       return `${issue.message} at "${ValidationError.joinPath(issue.path)}"`
 

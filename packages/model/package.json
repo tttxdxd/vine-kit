@@ -16,15 +16,15 @@
   ],
   "sideEffects": false,
   "exports": {
-    "./locales/*": {
-      "types": "./dist/locales/*.d.ts",
-      "import": "./dist/locales/*.mjs",
-      "require": "./dist/locales/*.cjs"
-    },
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
       "require": "./dist/index.cjs"
+    },
+    "./locales/*": {
+      "types": "./dist/locales/*.d.ts",
+      "import": "./dist/locales/*.mjs",
+      "require": "./dist/locales/*.cjs"
     }
   },
   "main": "dist/index.cjs",

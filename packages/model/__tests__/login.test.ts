@@ -2,8 +2,8 @@ import { Buffer } from 'node:buffer'
 import { describe, expect, it } from 'vitest'
 import { DesensitizedUtil } from '@vine-kit/core'
 import * as g from '@vine-kit/model'
+import '@vine-kit/model/locales/zh-CN'
 
-g.initLanguage('zh-CN')
 // 定义账号类型
 const Account = g.meta({
   type: String,
@@ -129,5 +129,45 @@ describe('login', () => {
     loginModel.account = 'admin1'
     loginModel.password = '123456'
     expect(loginModel.validate()).toBe(true)
+  })
+
+  it('表单校验 自定义校验', () => {
+    const LoginModel = g.model({
+      account: Account.extend({
+        validators: [g.custom(v => (['admin1'].includes(v)), '该用户未注册')],
+      }),
+      password: Password,
+    })
+    const loginModel = new LoginModel.$scenes.Login()
+
+    loginModel.account = 'adm3in'
+    loginModel.password = '123456'
+    expect(loginModel.validate()).toBe(false)
+    expect(loginModel.error!.message).toBe('登录账号(account): 该用户未注册')
+
+    loginModel.account = 'admin1'
+    expect(loginModel.validate()).toBe(true)
+    expect(loginModel.error?.message).toBe(undefined)
+  })
+
+  it('表单校验 自定义异步校验', async () => {
+    const LoginModel = g.model({
+      account: Account.extend({
+        validators: [g.customAsync(async v => (['admin1'].includes(v)), '该用户({{received}})未注册')],
+      }),
+      password: Password,
+    })
+    const loginModel = new LoginModel.$scenes.Login()
+
+    loginModel.account = 'adm3in'
+    loginModel.password = '123456'
+    expect(await loginModel.validateAsync()).toBe(false)
+    expect(loginModel.error!.message).toBe('登录账号(account): 该用户(adm3in)未注册')
+
+    loginModel.account = 'admin1'
+    expect(await loginModel.validateAsync()).toBe(true)
+    expect(loginModel.error?.message).toBe(undefined)
+
+    expect('validate' in loginModel).toBe(false)
   })
 })

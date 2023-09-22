@@ -1,5 +1,5 @@
 import type { NonEmptyArray } from '../types'
-import { isFunction, isString } from './general'
+import { isFunction, isNullish } from './general'
 import { randomInt } from './random'
 
 /**
@@ -40,7 +40,6 @@ export function flattenDeep(val: any[]): any[] {
 /**
  * 获取打乱后的集合
  * @param val
- * @returns
  */
 export function shuffle<T>(val: T[]): T[] {
   const result = [...val]
@@ -77,10 +76,16 @@ export function unique<T>(val: T[]): T[] {
 }
 
 export function every<T>(iterable: Iterable<T> | ArrayLike<T>, fn: (val: T) => boolean): boolean {
+  if (isNullish(iterable))
+    return false
+
   return Array.isArray(iterable) ? iterable.every(fn) : Array.from(iterable).every(fn)
 }
 
 export function some<T>(iterable: Iterable<T> | ArrayLike<T>, fn: (val: T) => boolean): boolean {
+  if (isNullish(iterable))
+    return false
+
   return Array.isArray(iterable) ? iterable.some(fn) : Array.from(iterable).some(fn)
 }
 

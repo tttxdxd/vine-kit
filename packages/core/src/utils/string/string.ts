@@ -100,7 +100,6 @@ export enum TrimMode {
  * @param str
  * @param mode
  * @param predicate
- * @returns
  */
 export function trim(str: string, mode: TrimMode = TrimMode.Both, predicate: (char: string) => boolean = Char.isBlank) {
   if (isEmpty(str))

@@ -1,31 +1,4 @@
-import type { MetaType } from './meta'
-
-export enum IssueCode {
-  invalid_type = 'invalid_type',
-  invalid_literal = 'invalid_literal',
-  custom = 'custom',
-  // invalid_union = 'invalid_union',
-  // invalid_union_discriminator = 'invalid_union_discriminator',
-  // invalid_enum_value = 'invalid_enum_value',
-  // unrecognized_keys = 'unrecognized_keys',
-  // invalid_arguments = 'invalid_arguments',
-  // invalid_return_type = 'invalid_return_type',
-  // invalid_date = 'invalid_date',
-  invalid_string = 'invalid_string',
-  too_small = 'too_small',
-  too_big = 'too_big',
-  // invalid_intersection_types = 'invalid_intersection_types',
-  // not_multiple_of = 'not_multiple_of',
-  // not_finite = 'not_finite',
-}
-
-export enum ParsedType {
-  string = 'string',
-  number = 'number',
-  boolean = 'boolean',
-  undefined = 'undefined',
-  unknown = 'unknown',
-}
+import type { IssueCode, ParsedType } from '../locales'
 
 interface IssueBase {
   path: (string | number)[]
@@ -81,6 +54,7 @@ interface TooBigIssue extends IssueBase {
 
 interface CustomIssue extends IssueBase {
   code: typeof IssueCode.custom
+  received: unknown
   params?: { [k: string]: any }
 }
 

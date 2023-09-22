@@ -1,10 +1,9 @@
-import type { NonEmptyArray } from '@vine-kit/core'
-import { define, defineLazy, isFunction, isUndefined, keyBy } from '@vine-kit/core'
+import { define, defineLazy, isFunction, isUndefined, keyBy, some } from '@vine-kit/core'
 
-import type { IMeta, IMetaOptions, IMetaRawOptions, IMetaScenes, MetaClass, MetaType, MetaValue, MetaValueToType } from './types/meta'
+import type { IMeta, IMetaOptions, IMetaScenes, MetaClass, MetaType, MetaValue } from './types/meta'
 import { type Issue } from './types/schema'
-import { getDefaultValue, toMetaType, validateMetaType } from './util'
-import { Validator } from './validator'
+import { getDefaultValue, validateMetaType } from './util'
+import { Validator, enums } from './validator'
 
 const MetaSymbol: unique symbol = Symbol('MetaSymbol')
 export const MetaValueSymbol: unique symbol = Symbol('MetaValueSymbol')
@@ -116,6 +115,16 @@ export class Meta<T extends MetaType> {
     return !this.issue
   }
 
+  async validateAsync(val: any, key: string) {
+    if (isUndefined(val) && !this.required)
+      return true
+
+    this.issue = await Validator.validateAsync(this.validators, val, [key])
+    this.error = this.issue?.message
+
+    return !this.issue
+  }
+
   static isMetaClass: typeof isMetaClass = isMetaClass
   static isMeta(val: unknown): val is IMeta<any> {
     return val instanceof Meta
@@ -125,7 +134,6 @@ export class Meta<T extends MetaType> {
 /**
  * 字段元数据类型
  * @param shape
- * @returns
  */
 export function meta<T extends MetaType, Options = never>(shape: IMetaOptions<T, Options>): MetaClass<T>
 export function meta<
@@ -172,6 +180,7 @@ export function meta<
     }
   }
 
+  define(_Meta, '$async', some(shape.validators!, v => v.async))
   defineLazy(_Meta, '$scenes', () => {
     const $scenes: any = {}
 
@@ -197,7 +206,6 @@ export function number(val: number = 0) {
 /**
  *
  * @param val
- * @returns
  */
 export function boolean(val: boolean = false) {
   return meta({ type: Boolean, default: val })
@@ -206,7 +214,6 @@ export function boolean(val: boolean = false) {
 /**
  * 定义字典类型
  * @param shape
- * @returns
  * @example
  * const Switch = dict({
  *  type: Boolean,
@@ -221,7 +228,9 @@ export function dict<
 ) {
   const options = shape.options!
   const map = keyBy(options, 'value')
+  const values = options.map(v => v.value)
   const defaultValue: any = options.find(({ default: d }) => d)?.value ?? options[0].value
+  const validators: any[] = [enums(values)].concat((shape.validators as any) ?? [])
 
   return meta({
     default: defaultValue,
@@ -229,5 +238,6 @@ export function dict<
       return map[String(val)].label
     },
     ...shape,
-  }) as MetaClass<T, Scenes, Options>
+    validators,
+  }) as unknown as MetaClass<T, Scenes, Options>
 }

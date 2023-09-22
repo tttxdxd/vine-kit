@@ -45,7 +45,6 @@ export const EXCLAMATION = '!'
 /**
  * 是否为 ASCII 字符
  * @param char
- * @returns
  */
 export function isASCII(char: string): boolean {
   return char.charCodeAt(0) <= 0x7F // 0x7F = 127

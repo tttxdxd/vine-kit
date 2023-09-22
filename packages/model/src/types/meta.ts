@@ -1,7 +1,7 @@
 import type { Validator } from '../validator'
 import type { IModel } from './model'
 import type { Issue } from './schema'
-import type { IValidator } from './validator'
+import type { IValidator, IsAsync } from './validator'
 
 export type MetaType = NumberConstructor | StringConstructor | BooleanConstructor
 export type MetaValue<T extends MetaType> = T extends NumberConstructor ? number :
@@ -13,7 +13,7 @@ export type MetaValueToType<T extends number | string | boolean> = T extends num
     : T extends boolean ? BooleanConstructor
       : never
 
-export interface IMetaRawOptions<T extends MetaType, Options = never> {
+export interface IMetaRawOptions<T extends MetaType, Options = never, Validates extends IValidator<T>[] = IValidator<T>[]> {
   default?: MetaValue<T>
   computed?: (this: any) => MetaValue<T>
 
@@ -35,7 +35,7 @@ export interface IMetaRawOptions<T extends MetaType, Options = never> {
   formatter?: (this: any, value: MetaValue<T>, key: string) => string
 
   /** 校验 */
-  validators?: IValidator<T>[]
+  validators?: Validates
 
   from?: (this: any, value: any) => MetaValue<T>
   to?: (this: any, value: MetaValue<T>, key: string) => MetaValue<T>
@@ -73,6 +73,7 @@ export interface IMeta<T extends MetaType = any, Options = never> {
   readonly error?: string
   readonly issue?: Issue
   validate(this: any, value: MetaValue<T>, key?: string): boolean
+  validateAsync(this: any, value: MetaValue<T>, key?: string): Promise<boolean>
 
   formatter?: (this: any, value: MetaValue<T>, key: string, data: any) => string
   from?: <T>(this: any, value: any) => T
@@ -84,24 +85,30 @@ export interface IMeta<T extends MetaType = any, Options = never> {
 
 export interface MetaClass<
   T extends MetaType,
-  Scene extends IMetaScenes<T> | never = never,
-  Options = never,
+  Scene extends IMetaScenes<T> | undefined = undefined,
+  Options = undefined,
+  Validates extends IValidator<T>[] = IValidator<T>[],
 > {
-  new(options?: IMetaRawOptions<T, Options>): IMeta<T, Options>
+  $async: IsAsync<Validates>
+
+  new(options?: IMetaRawOptions<T, Options, Validates>): IMeta<T, Options>
 
   /**
    * 扩展字段元数据类型
    * @param options
    * @returns
    */
-  extend(options: IMetaRawOptions<T>): MetaClass<T>
+  extend<
+    NOptions = Options,
+    NValidates extends IValidator<T>[] = Validates,
+  >(options: IMetaRawOptions<T, NOptions, NValidates>): MetaClass<T, Scene, NOptions, NValidates>
 
-  default(val: MetaValue<T>): MetaClass<T>
-  label(val: string): MetaClass<T>
-  readonly(val?: boolean): MetaClass<T>
-  disabled(val?: boolean): MetaClass<T>
-  hidden(val?: boolean): MetaClass<T>
-  required(val?: boolean): MetaClass<T>
+  default(val: MetaValue<T>): MetaClass<T, Scene, Options>
+  label(val: string): MetaClass<T, Scene, Options>
+  readonly(val?: boolean): MetaClass<T, Scene, Options>
+  disabled(val?: boolean): MetaClass<T, Scene, Options>
+  hidden(val?: boolean): MetaClass<T, Scene, Options>
+  required(val?: boolean): MetaClass<T, Scene, Options>
 
   $scenes: {
     [key in keyof Scene]: MetaClass<T>
@@ -109,4 +116,4 @@ export interface MetaClass<
   $options: Options
 }
 
-export type toIMeta<T extends MetaClass<any, any>> = T extends MetaClass<infer T, any> ? IMeta<T> : never
+export type toIMeta<T extends MetaClass<any, any, any, any>> = T extends MetaClass<infer Z, any, any, any> ? IMeta<Z> : never

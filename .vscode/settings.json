@@ -7,5 +7,6 @@
   "editor.formatOnSave": false,
   "cSpell.words": [
     "tagify"
-  ]
+  ],
+  "eslint.enable": true
 }

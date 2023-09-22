@@ -23,8 +23,11 @@
       ],
       "@vine-kit/core": [
         "./packages/core/src/index.ts"
-      ], 
-      "@vine-kit/model": [
+      ],
+      "@vine-kit/model/locales/*": [
+        "./packages/model/src/locales/*.ts"
+      ],
+      "@vine-kit/model/*": [
         "./packages/model/src/index.ts"
       ]
     }
