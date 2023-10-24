@@ -6,6 +6,7 @@ import * as RegexUtil from './regex'
 import * as DesensitizedUtil from './desensitized'
 import * as Validator from './validator'
 import * as RandomUtil from './random'
+import * as MathUtil from './math'
 
 export * from './general'
 
@@ -20,4 +21,4 @@ export * from './events'
 export * from './nanoid'
 export * from './validator'
 
-export { ObjectUtil, ArrayUtil, StringUtil, PromiseUtil, RegexUtil, DesensitizedUtil, RandomUtil, Validator }
+export { ObjectUtil, ArrayUtil, StringUtil, PromiseUtil, RegexUtil, DesensitizedUtil, RandomUtil, MathUtil, Validator }

@@ -22,6 +22,11 @@ export interface IMetaRawOptions<T extends MetaType, Options = never, Validates 
   /** 字段 */
   label?: string | ((this: any, value: MetaValue<T>, key: string) => string)
 
+  /** 字段描述 */
+  desc?: string
+  /** 字段占位符描述 */
+  placeholder?: string
+
   /** 字段是否必填 */
   required?: boolean
   /** 字段是否只读 */
@@ -34,6 +39,8 @@ export interface IMetaRawOptions<T extends MetaType, Options = never, Validates 
   /** 字段输出格式化 */
   formatter?: (this: any, value: MetaValue<T>, key: string) => string
 
+  /** 验证逻辑的触发方式 */
+  trigger?: 'blur' | 'change' | ''
   /** 校验 */
   validators?: Validates
 
@@ -61,6 +68,8 @@ export interface IMeta<T extends MetaType = any, Options = never> {
 
   readonly label: string
   readonly prop: string
+  readonly desc?: string
+  readonly placeholder?: string
 
   readonly readonly: boolean
   readonly disabled: boolean
@@ -68,10 +77,12 @@ export interface IMeta<T extends MetaType = any, Options = never> {
   readonly required: boolean
 
   readonly text: string
+  /** 验证逻辑的触发方式 */
+  readonly trigger: 'blur' | 'change' | ''
   readonly validators: Validator[]
 
-  readonly error?: string
-  readonly issue?: Issue
+  error?: string
+  issue?: Issue
   validate(this: any, value: MetaValue<T>, key?: string): boolean
   validateAsync(this: any, value: MetaValue<T>, key?: string): Promise<boolean>
 

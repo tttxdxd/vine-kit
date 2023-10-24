@@ -38,6 +38,7 @@ export function bind(origin: any, key: string, target: any, targetKey: string = 
     set(value) {
       origin[key] = value
     },
+    configurable: true,
   })
 }
 

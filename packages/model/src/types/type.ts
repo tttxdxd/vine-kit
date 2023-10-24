@@ -1,1 +1,1 @@
-export type ISchemaType = String
+export type ISchemaType = string

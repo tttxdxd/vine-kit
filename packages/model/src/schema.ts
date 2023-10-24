@@ -7,6 +7,7 @@ import type { IModel, ModelRawShape, ModelStore } from './types/model'
 import { Meta } from './meta'
 import type { Issue } from './types/schema'
 import { ValidationError } from './error'
+import { config } from './config'
 
 export class Schema<T extends ModelRawShape = any> {
   private model: IModel
@@ -70,8 +71,14 @@ export class Schema<T extends ModelRawShape = any> {
 
   validate(val: Record<string, any>) {
     this.model.error = undefined
+    this.each((meta) => {
+      meta.error = undefined
+      meta.issue = undefined
+      return true
+    })
 
     const issues: Issue[] = []
+
     this.each((meta, path) => {
       const value = get(val, path)
       const isValid = meta.validate(value, last(path))
@@ -79,7 +86,7 @@ export class Schema<T extends ModelRawShape = any> {
       if (!isValid)
         issues.push(meta.issue!)
 
-      return isValid
+      return config.validation.all || isValid
     })
 
     if (issues.length) {
@@ -92,6 +99,11 @@ export class Schema<T extends ModelRawShape = any> {
 
   async validateAsync(val: Record<string, any>) {
     this.model.error = undefined
+    this.each((meta) => {
+      meta.error = undefined
+      meta.issue = undefined
+      return true
+    })
 
     const issues: Issue[] = []
     await this.eachAsync(async (meta, path) => {
@@ -101,7 +113,7 @@ export class Schema<T extends ModelRawShape = any> {
       if (!isValid)
         issues.push(meta.issue!)
 
-      return isValid
+      return config.validation.all || isValid
     })
 
     if (issues.length) {

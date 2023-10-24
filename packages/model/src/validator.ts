@@ -200,7 +200,7 @@ export const regex = memoize(
  * @param searchString 要搜索的字符串。
  */
 export const startsWith = memoize((searchString: string) =>
-  Validator.new<IValidatorString>(IssueCode.invalid_string, val => isStartsWith(val, searchString), { startsWith: searchString }),
+  Validator.new<IValidatorString>(IssueCode.invalid_string, val => isStartsWith(val, searchString), { validation: { startsWith: searchString } }),
 )
 
 /**
@@ -208,7 +208,7 @@ export const startsWith = memoize((searchString: string) =>
  * @param searchString 要搜索的字符串。
  */
 export const endsWith = memoize((searchString: string) =>
-  Validator.new<IValidatorString>(IssueCode.invalid_string, val => isEndsWith(val, searchString), { endsWith: searchString }),
+  Validator.new<IValidatorString>(IssueCode.invalid_string, val => isEndsWith(val, searchString), { validation: { endsWith: searchString } }),
 )
 
 /**

@@ -27,8 +27,7 @@ it('mergeDeep', () => {
   }, {
     bar: {},
     arr: [2],
-  } as any,
-  true))
+  } as any, true))
     .toMatchInlineSnapshot(`
       {
         "arr": [

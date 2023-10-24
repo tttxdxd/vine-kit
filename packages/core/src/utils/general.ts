@@ -53,9 +53,7 @@ export const isNaN = (val: any): boolean => isNumber(val) && Number.isNaN(val)
 export const isArrayLike = (val: any): val is ArrayLike<any> => !isNullish(val) && isNumber(val.length)
 
 export const isConstructor = (val: any): boolean => val === 'constructor'
-export function isInstanceOf<T extends new (...args: any[]) => any>(val: unknown,
-  type: T,
-  isStrict: boolean): boolean {
+export function isInstanceOf<T extends new (...args: any[]) => any>(val: unknown, type: T, isStrict: boolean): boolean {
   if (!val || typeof val !== 'object')
     return false
   if (isStrict)

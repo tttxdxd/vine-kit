@@ -1,22 +1,12 @@
 {
   "compilerOptions": {
     "target": "es2018",
-    "module": "esnext",
+    "jsx": "preserve",
     "lib": [
       "esnext"
     ],
+    "module": "esnext",
     "moduleResolution": "node",
-    "esModuleInterop": true,
-    "strict": true,
-    "strictNullChecks": true,
-    "resolveJsonModule": true,
-    "skipDefaultLibCheck": true,
-    "skipLibCheck": true,
-    "jsx": "preserve",
-    "types": [
-      "node",
-      "vitest/importMeta"
-    ],
     "paths": {
       "vine-kit": [
         "./packages/vine-kit/src/index.ts"
@@ -29,7 +19,23 @@
       ],
       "@vine-kit/model/*": [
         "./packages/model/src/index.ts"
+      ],
+      "@vine-kit/grape": [
+        "./packages/grape/src/index.ts"
+      ],
+      "@vine-kit/jce-compiler": [
+        "./packages/jce-compiler/src/index.ts"
       ]
-    }
+    },
+    "resolveJsonModule": true,
+    "types": [
+      "node",
+      "vitest/importMeta"
+    ],
+    "strict": true,
+    "strictNullChecks": true,
+    "esModuleInterop": true,
+    "skipDefaultLibCheck": true,
+    "skipLibCheck": true
   }
 }

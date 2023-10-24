@@ -133,7 +133,7 @@ export function errorMap(issue: any, _ctx?: any) {
         }
         else if ('endsWith' in issue.validation) {
           message = t('errors.invalid_string.endsWith', {
-            startsWith: issue.validation.endsWith,
+            endsWith: issue.validation.endsWith,
           })
         }
       }
@@ -145,15 +145,19 @@ export function errorMap(issue: any, _ctx?: any) {
       break
     case IssueCode.too_small:
       message = t(
-        `errors.too_small.${issue.type}.${issue.exact ? 'exact' : issue.inclusive ? 'inclusive' : 'not_inclusive'}`, {
+        `errors.too_small.${issue.type}.${issue.exact ? 'exact' : issue.inclusive ? 'inclusive' : 'not_inclusive'}`,
+        {
           minimum: issue.type === 'date' ? new Date(issue.minimum as any) : issue.minimum,
-        })
+        },
+      )
       break
     case IssueCode.too_big:
       message = t(
-        `errors.too_big.${issue.type}.${issue.exact ? 'exact' : issue.inclusive ? 'inclusive' : 'not_inclusive'}`, {
+        `errors.too_big.${issue.type}.${issue.exact ? 'exact' : issue.inclusive ? 'inclusive' : 'not_inclusive'}`,
+        {
           maximum: issue.type === 'date' ? new Date(issue.maximum as any) : issue.maximum,
-        })
+        },
+      )
       break
     // case IssueCode.invalid_intersection_types:
     //   message = t('errors.invalid_intersection_types')

@@ -18,19 +18,25 @@ export type ModelStore<T extends ModelRawShape> = {
     : never
 }
 
-export interface IModel<T extends ModelRawShape = any> {
+export type IModel<T extends ModelRawShape = any, Async = false> = {
   $parent?: IModel<any>
   $views: ModelViews<T>
   $store: ModelStore<T>
   $schema: Schema<T>
   error?: ValidationError
 
+  bindStore(store: ModelStore<T>): void
   reset(): void
   fromJSON<Self>(this: Self, json: PartialStore<T>): Self
   toJSON(): ModelStore<T>
   toParams(): any
   toFormData(): any
-}
+} & (Async extends true ? {
+  validateAsync(): Promise<boolean>
+} : {
+  validate(): boolean
+  validateAsync(): Promise<boolean>
+})
 
 export type PartialStore<T extends ModelRawShape> = Identity<{
   [K in keyof T]?: T[K] extends ModelClass<any> ? ModelStore<T> : T[K] extends MetaClass<infer Z, any, any, any> ?
@@ -53,12 +59,7 @@ export type ModelIsAsync<T extends ModelRawShape> =
   T[keyof T] extends ModelClass<any, infer Async> ? Async : T[keyof T] extends MetaClass<any, any, any, infer V> ? IsAsync<V> : false
 
 export type ModelClass<T extends ModelRawShape = any, Async = ModelIsAsync<T>> = {
-  new(data?: PartialStore<T>, options?: ModelOptions): IModel<T> & ModelStore<T> & (Async extends true ? {
-    validateAsync(): Promise<boolean>
-  } : {
-    validate(): boolean
-    validateAsync(): Promise<boolean>
-  })
+  new(data?: PartialStore<T>, options?: ModelOptions): IModel<T, Async> & ModelStore<T>
 } & { [K in keyof T]: T[K] }
 & {
   $async: Async

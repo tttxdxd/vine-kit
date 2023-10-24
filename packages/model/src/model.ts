@@ -1,5 +1,6 @@
-import { define, defineLazy, flatten, get, last, notUndefined, set, some, unique } from '@vine-kit/core'
-import { Meta, MetaValueSymbol } from './meta'
+import type { Emitter } from '@vine-kit/core'
+import { define, defineLazy, flatten, get, last, mitt, notUndefined, set, some, unique } from '@vine-kit/core'
+import { Meta } from './meta'
 import type { IModel, ModelClass, ModelIsAsync, ModelOptions, ModelRawShape, ModelStore, ModelViews, PartialStore } from './types/model'
 import type { ValidationError } from './error'
 import { Schema } from './schema'
@@ -14,6 +15,19 @@ export function isModelClass(value: any): value is ModelClass {
 export class Model<
   T extends ModelRawShape,
 > implements IModel<T> {
+  event: Emitter<{ validate: () => void }>
+  constructor() {
+    this.event = mitt()
+  }
+
+  validate(): boolean {
+    throw new Error('Method not implemented.')
+  }
+
+  validateAsync(): Promise<boolean> {
+    throw new Error('Method not implemented.')
+  }
+
   readonly $views!: ModelViews<T>
   readonly $store!: ModelStore<T>
   readonly $parent!: IModel
@@ -70,6 +84,18 @@ export class Model<
 
   }
 
+  bindStore(store: ModelStore<T>) {
+    const keys = Object.keys(this.$views)
+
+    for (const key of keys) {
+      const meta = this.$views[key]
+
+      bind(store, key, meta, 'value')
+      bind(store, key, this)
+    }
+    (this as any).$store = store
+  }
+
   static isModelClass: typeof isModelClass = isModelClass
   static isModel(val: any): val is IModel<any> {
     return val instanceof Model
@@ -96,7 +122,6 @@ export function model<T extends ModelRawShape, Async = ModelIsAsync<T>>(shape: T
 
       define(this, '$parent', { value: $parent })
       define(this, '$views', { value: $views })
-      define(this, '$store', { value: $store })
       define(this, '$keyPath', { value: $keyPath })
       define(this, '$schema', { value: $schema })
 
@@ -113,20 +138,18 @@ export function model<T extends ModelRawShape, Async = ModelIsAsync<T>>(shape: T
 
           $views[key] = meta
 
-          define($store, key, (meta as any)[MetaValueSymbol](defaultValue))
-          bind($store, key, meta, 'value')
-          bind($store, key, this)
+          define($store, key, Meta.getBindValue(meta as any, defaultValue))
         }
         else if (Model.isModelClass(Constructor)) {
-          const model = new Constructor(defaultValue, {
+          const _ = new Constructor(defaultValue, {
             parent: this as any,
             keyPath: key,
             scene,
           })
-
-          define(this, key, { value: model })
         }
       }
+
+      this.bindStore($store)
     }
 
     validate() {

@@ -2,10 +2,15 @@ import { isEmpty } from './general'
 import { Char, repeat } from './string'
 
 /**
- * 密码加密显示
- * @param password
+ * Encrypts a password for display purposes.
+ *
+ * @category DesensitizedUtil
+ * @example
+ *
+ * password("password"); // "********"
+ * password("pass");     // "****"
  */
-export function password(password: string) {
+export function password(password: string): string {
   if (isEmpty(password))
     return Char.EMPTY
 

@@ -1,4 +1,4 @@
-import { define, defineLazy, isFunction, isUndefined, keyBy, some } from '@vine-kit/core'
+import { define, defineLazy, isFunction, isUndefined, keyBy, notUndefined, some } from '@vine-kit/core'
 
 import type { IMeta, IMetaOptions, IMetaScenes, MetaClass, MetaType, MetaValue } from './types/meta'
 import { type Issue } from './types/schema'
@@ -21,6 +21,7 @@ export class Meta<T extends MetaType> {
   [MetaValueSymbol](newVal?: MetaValue<T>) {
     if (this.shape.computed)
       return this.shape.computed
+
     return {
       value: newVal ?? this.shape.default ?? getDefaultValue(this.type),
       writable: true,
@@ -39,12 +40,14 @@ export class Meta<T extends MetaType> {
     if (options.default && !validateMetaType(options.default, options.type))
       throw new Error('Meta: default value is invalid')
 
-    const { type, model } = options
+    const { type, model, desc, placeholder } = options
+    const isComputed = notUndefined(options.computed)
 
+    const readonly = isComputed ? true : options.readonly ?? false
     const required = options.required ?? false
-    const readonly = options.readonly ?? false
     const disabled = options.disabled ?? false
     const hidden = options.hidden ?? false
+    const trigger = options.trigger ?? ''
     const validators = [Validator.fromMeta(type), ...(options.validators ?? [])]
 
     this.shape = {
@@ -57,12 +60,17 @@ export class Meta<T extends MetaType> {
 
     this.prop = options.prop ?? ''
     define(this, 'label', isFunction(options.label) ? () => (options.label as ((...args: any[]) => string))!.call(model, this.value, this.prop) : options.label ?? '')
+    if (notUndefined(desc))
+      define(this, 'desc', { value: desc })
+    if (notUndefined(placeholder))
+      define(this, 'placeholder', { value: placeholder })
 
-    defineLazy(this, 'value', this[MetaValueSymbol].bind(this))
+    defineLazy(this, 'value', Meta.getBindValue.bind(null, this as any))
     define(this, 'required', required)
     define(this, 'readonly', readonly)
     define(this, 'disabled', disabled)
     define(this, 'hidden', hidden)
+    define(this, 'trigger', trigger)
     define(this, 'validators', validators)
     define(this, 'formatter', {
       value: this.shape.formatter?.bind(model),
@@ -128,6 +136,18 @@ export class Meta<T extends MetaType> {
   static isMetaClass: typeof isMetaClass = isMetaClass
   static isMeta(val: unknown): val is IMeta<any> {
     return val instanceof Meta
+  }
+
+  static getBindValue<T extends MetaType>(meta: Meta<T>, newVal?: MetaValue<T>) {
+    if (meta.shape.computed)
+      return meta.shape.computed
+
+    return {
+      value: newVal ?? meta.shape.default ?? getDefaultValue(meta.type),
+      writable: true,
+      enumerable: true,
+      configurable: true,
+    }
   }
 }
 
@@ -223,7 +243,8 @@ export function boolean(val: boolean = false) {
 export function dict<
   T extends MetaType,
   Scenes extends IMetaScenes<T> = IMetaScenes<T>,
-  Options extends { value: MetaValue<T>; label: string; default?: boolean }[] = { value: MetaValue<T>; label: string; default?: boolean }[]>(
+  Options extends { value: MetaValue<T>; label: string; default?: boolean }[] = { value: MetaValue<T>; label: string; default?: boolean }[],
+>(
   shape: IMetaOptions<T, Options>,
 ) {
   const options = shape.options!

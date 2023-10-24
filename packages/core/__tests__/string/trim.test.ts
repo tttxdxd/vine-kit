@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import { StringUtil } from '@vine-kit/core'
 
-describe('StringUtil.trim', () => {
+describe('stringUtil.trim', () => {
   it('should trim whitespaces from both ends', () => {
     const str = '  hello  '
     const result = StringUtil.trim(str)

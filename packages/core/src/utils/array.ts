@@ -1,15 +1,37 @@
-import type { NonEmptyArray } from '../types'
+import type { Arrayable, NonEmptyArray, Nullable } from '../types'
 import { isFunction, isNullish } from './general'
 import { randomInt } from './random'
 
 /**
- * 生成间隔为 step, 位于 [start, end) 区间的数组
+ * Genrate a range array of numbers. The `stop` is exclusive.
+ *
+ * @category ArrayUtil
  */
-export function range(start: number, end: number, step: number = 1) {
-  return Array.from({ length: Math.ceil((end - start) / step) }, (_, i) => start + i * step)
+export function range(stop: number): number[]
+export function range(start: number, stop: number, step?: number): number[]
+export function range(...args: any): number[] {
+  let start: number, stop: number, step: number
+
+  if (args.length === 1) {
+    start = 0
+    step = 1;
+    ([stop] = args)
+  }
+  else {
+    ([start, stop, step = 1] = args)
+  }
+
+  return Array.from({ length: Math.ceil((stop - start) / step) }, (_, i) => start + i * step)
 }
 
-export function toArray<T>(val: T | T[] = []): T[] {
+/**
+ * Convert `Arrayable<T>` to `Array<T>`
+ *
+ * @category ArrayUtil
+ */
+export function toArray<T>(val?: Nullable<Arrayable<T>>): T[] {
+  if (isNullish(val))
+    return []
   return Array.isArray(val) ? val : [val]
 }
 
@@ -66,13 +88,56 @@ export function notEmptyArray<T>(val: T[]): val is NonEmptyArray<T> {
   return val.length !== 0
 }
 
-export function last<T>(val: NonEmptyArray<T>): T
-export function last<T>(val: T[]): T | undefined {
-  return Array.isArray(val) && val.length > 0 ? val[val.length - 1] : undefined
+/**
+ * Get nth item of Array. Negative for backward
+ *
+ * @category ArrayUtil
+ */
+export function at(val: readonly [], index: number): undefined
+export function at<T>(val: readonly T[], index: number): T
+export function at<T>(val: readonly T[] | [], index: number): T | undefined {
+  const len = val.length
+  if (!len)
+    return undefined
+
+  if (index < 0)
+    index += len
+
+  return val[index]
 }
 
-export function unique<T>(val: T[]): T[] {
+/**
+ * Get last item
+ *
+ * @category ArrayUtil
+ */
+export function last(val: readonly []): undefined
+export function last<T>(val: readonly T[]): T
+export function last<T>(val: readonly T[]): T | undefined {
+  return at(val, -1)
+}
+
+/**
+ * Unique an Array
+ *
+ * @category ArrayUtil
+ */
+export function unique<T>(val: readonly T[]): T[] {
   return Array.from(new Set(val))
+}
+
+/**
+ * Unique an Array by a custom equality function
+ *
+ * @category ArrayUtil
+ */
+export function uniqueBy<T>(val: readonly T[], equalFn: (a: any, b: any) => boolean): T[] {
+  return val.reduce((acc: T[], cur: any) => {
+    const index = acc.findIndex((item: any) => equalFn(cur, item))
+    if (index === -1)
+      acc.push(cur)
+    return acc
+  }, [])
 }
 
 export function every<T>(iterable: Iterable<T> | ArrayLike<T>, fn: (val: T) => boolean): boolean {
@@ -102,4 +167,16 @@ export function keyBy<T>(iterable: Iterable<T> | ArrayLike<T>, keyFn: ((val: T) 
     acc[valKey] = val
     return acc
   }, {} as Record<any, T>)
+}
+
+/**
+ * Returns a new array with the elements sorted in ascending order.
+ *
+ * @category ArrayUtil
+ */
+export function toSorted<T>(iterable: Iterable<T> | ArrayLike<T>, compareFn?: (a: T, b: T) => number) {
+  if (isNullish(iterable))
+    return iterable
+
+  return Array.from(iterable).sort(compareFn)
 }

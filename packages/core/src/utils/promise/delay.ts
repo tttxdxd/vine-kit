@@ -13,7 +13,7 @@
  * @param ms Milliseconds to wait before resolving.
  * @param value Argument to be resolved by this Promise.
  */
-export function delay(ms: number, value: any) {
+export function delay(ms: number, value?: any) {
   return new Promise((resolve) => {
     setTimeout(resolve, ms, value)
   })

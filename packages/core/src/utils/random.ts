@@ -1,10 +1,10 @@
-import { isUndefined } from './general'
-
 /**
- * 获取一个在 [min, max) 之间的随机浮点数
+ * Returns a pseudorandom number between the given range.
  *
+ * @category RandomUtil
  * @example
  *
+ * RandomUtil.random()
  */
 export function random(min: number = 0, max: number = 1): number {
   return Math.random() * (max - min) + min
@@ -13,50 +13,55 @@ export function random(min: number = 0, max: number = 1): number {
 /**
  * 获取一个随机整数 [0, MAX_SAFE_INTEGER)
  *
+ * @category RandomUtil
  * @example
  *
- * randomInt()
+ * RandomUtil.randomInt()
  * // => an integer between 0 and MAX_SAFE_INTEGER
  */
 export function randomInt(): number
 /**
  * 获取一个随机整数 [0, max)
  *
+ * @category RandomUtil
  * @param {number} max 最大值(不含)
  * @example
  *
- * randomInt(5)
+ * RandomUtil.randomInt(5)
  * // => an integer between 0 and 5
  */
 export function randomInt(max: number): number
 /**
  * 获取一个随机整数 [min, max)
  *
+ * @category RandomUtil
  * @param {number} min 最小值(包含)
  * @param {number} max 最大值(不含)
  * @example
  *
- * randomInt(0, 5)
+ * RandomUtil.randomInt(0, 5)
  * // => an integer between 0 and 5
  */
 export function randomInt(min: number, max: number): number
-export function randomInt(arg1?: number, arg2?: number): number {
+export function randomInt(...args: number[]): number {
   let min = 0
   let max = Number.MAX_SAFE_INTEGER
 
-  if (isUndefined(arg2)) {
-    max = arg1!
-  }
-  else {
-    min = arg1!
-    max = arg2!
-  }
+  if (args.length === 1)
+    [max] = args
+  else if (args.length === 2)
+    [min, max] = args
 
   return Math.floor(Math.random() * (max - min)) + min
 }
 
 /**
- * 获取一个随机布尔值 true or false
+ * Generates a random boolean value.
+ *
+ * @category RandomUtil
+ * @example
+ *
+ * RandomUtil.randomBoolean(); // true or false
  */
 export function randomBoolean() {
   return randomInt(2) === 0
