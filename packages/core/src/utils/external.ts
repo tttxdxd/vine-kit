@@ -9,6 +9,8 @@ import * as RandomUtil from './random'
 import * as MathUtil from './math'
 import * as TreeUtil from './tree'
 
+export * from './base'
+
 export * from './general'
 export * from './pipe'
 

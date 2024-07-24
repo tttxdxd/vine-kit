@@ -1,3 +1,5 @@
+import { assert } from '@vine-kit/core'
+
 import type { Provider } from './provider'
 import { Scope, isClassProvider, isFactoryProvider, isNormalToken, isProvider, isValueProvider } from './provider'
 import type { AbstractType, InjectionToken, Type } from './types'
@@ -6,9 +8,13 @@ export class Container {
   private _registry: Map<InjectionToken, Provider> = new Map()
   private _snapshots: Array<typeof this._registry> = []
 
+  has<T>(token: InjectionToken<T>): boolean {
+    return this._registry.has(token)
+  }
+
   bind<T>(provider: Provider<T>) {
-    if (this._registry.has(provider.token))
-      throw new Error('only bound once')
+    assert(isProvider(provider), 'invalid provider')
+    assert(!this.has(provider.token), `${this.getTokenName(provider.token)} is already bound`)
 
     provider.scope = provider.scope ?? Scope.Singleton
     if (!isValueProvider(provider)) {
@@ -40,8 +46,7 @@ export class Container {
   }
 
   get<T>(token: InjectionToken<T>): T {
-    if (!this._registry.has(token))
-      throw new Error(`${this.getTokenName(token)} is not bound`)
+    assert(this.has(token), `${this.getTokenName(token)} is already bound`)
 
     const provider = this._registry.get(token)!
 

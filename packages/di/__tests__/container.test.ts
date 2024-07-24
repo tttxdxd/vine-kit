@@ -80,4 +80,8 @@ describe('di Container', () => {
     container.restore()
     expect(container.get(tokenSymbol)).toBe(0)
   })
+
+  it('can get a non-existing token', () => {
+    expect(() => container.get(tokenSymbol)).toThrowError()
+  })
 })
