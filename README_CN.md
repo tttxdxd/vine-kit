@@ -8,7 +8,10 @@ vine-kit
 一个简单易用的JavaScript工具库.
 <p>
 <p align="center">
-  <a href="https://www.npmjs.com/package/vine-kit"><img src="https://img.shields.io/npm/v/vine-kit?color=729B1B&label="></a>
+  <a href="https://www.npmjs.com/package/vine-kit"><img src="https://img.shields.io/npm/v/vine-kit.svg?style=flat&colorA=18181B&colorB=28CF8D"  alt="Version"></a>
+  <a href="https://www.npmjs.com/package/vine-kit"><img src="https://img.shields.io/npm/dm/vine-kit.svg?style=flat&colorA=18181B&colorB=28CF8D" alt="Downloads"></a>
+  <a href="https://github.com/tttxdxd/vine-kit/tree/main/LICENSE"><img src="https://img.shields.io/github/license/tttxdxd/vine-kit.svg?style=flat&colorA=18181B&colorB=28CF8D" alt="License"></a>
+  <a href="https://github.com/tttxdxd/vine-kit/actions"><img src="https://github.com/tttxdxd/vine-kit/workflows/CI/badge.svg?style=flat&colorA=18181B&colorB=28CF8D" alt="CI"></a>
 <p>
 
 <p align="center">
