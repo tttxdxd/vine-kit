@@ -25,6 +25,19 @@ vine-kit
 ## Features
 - 封装常用的工具函数
 
+- [ ] 核心基础工具 @vine-kit/core
+  - [ ] 数据结构
+    - [x] 队列、栈
+    - [x] 链表
+    - [x] 优先队列（最小堆）
+    - [ ] 双向队列
+  - [ ] 基础工具
+    - [x] 基础类型判断
+    - [x] 重试函数
+- [ ] 定时任务 @vine-kit/task
+- [ ] 数据层定义工具 @vine-kit/model
+- [ ] 数据库查询工具 @vine-kit/sql
+
 ## Installation and Usage
 Install the library with `npm install vine-kit`
 

@@ -31,8 +31,5 @@
   "scripts": {
     "build": "unbuild",
     "stub": "unbuild --stub"
-  },
-  "dependencies": {
-    "@vine-kit/core": "^0.1.2"
   }
 }

@@ -48,6 +48,13 @@ export function hasBlank(val: string[]): boolean {
 /**
  * 检查字符串是否都为数字组成
  * @param str
+ * @example
+ * ```js
+ * StringUtil.isNumeric()         // false
+ * StringUtil.isNumeric('')       // false
+ * StringUtil.isNumeric('123')    // true
+ * StringUtil.isNumeric('abc')    // false
+ * ```
  */
 export function isNumeric(str: string): boolean {
   return !isEmpty(str) && every(str, Char.isNumber)
@@ -58,6 +65,12 @@ export function isNumeric(str: string): boolean {
  * @param str 要检查的字符串
  * @param searchString 要搜索的字符串。
  * @param position 可选参数，指定从字符串的哪个位置开始搜索，默认为 0。
+ * @example
+ * ```js
+ * StringUtil.isStartsWith('abc', 'a')         // true
+ * StringUtil.isStartsWith('abc', 'b')         // false
+ * StringUtil.isStartsWith('abc', 'a', 1)     // false
+ * ```
  */
 export function isStartsWith(str: string, searchString: string, position: number = 0) {
   str = String(str)
@@ -76,6 +89,12 @@ export function isStartsWith(str: string, searchString: string, position: number
  * @param str 要检查的字符串
  * @param searchString 要搜索的字符串。
  * @param endPosition 可选参数，指定从字符串的哪个位置结束搜索，默认为要检查的字符串的长度。
+ * @example
+ * ```js
+ * StringUtil.isEndsWith('abc', 'c')         // true
+ * StringUtil.isEndsWith('abc', 'b')         // false
+ * StringUtil.isEndsWith('abc', 'c', 2)     // false
+ * ```
  */
 export function isEndsWith(str: string, searchString: string, endPosition: number = str.length) {
   str = String(str)
@@ -100,6 +119,13 @@ export enum TrimMode {
  * @param str
  * @param mode
  * @param predicate
+ * @example
+ * ```js
+ * 1. StringUtil.trim('   abc   ')         // 'abc'
+ * 2. StringUtil.trim('   abc   ', TrimMode.Start)     // 'abc   '
+ * 3. StringUtil.trim('   abc   ', TrimMode.End)      // '   abc'
+ * 4. StringUtil.trim('   abc   ', TrimMode.Both)      // 'abc'
+ * ```
  */
 export function trim(str: string, mode: TrimMode = TrimMode.Both, predicate: (char: string) => boolean = Char.isBlank) {
   if (isEmpty(str))
@@ -123,14 +149,33 @@ export function trim(str: string, mode: TrimMode = TrimMode.Both, predicate: (ch
   return str
 }
 
+/**
+ * 去除字符串开头的空白字符
+ *
+ * @param str 要处理的字符串
+ * @returns 返回处理后的字符串
+ */
 export function trimStart(str: string) {
   return trim(str, -1)
 }
 
+/**
+ * 去除字符串末尾的空白字符
+ *
+ * @param str 待处理的字符串
+ * @returns 返回处理后的字符串
+ */
 export function trimEnd(str: string) {
   return trim(str, 1)
 }
 
+/**
+ * 重复字符串指定次数
+ *
+ * @param str 要重复的字符串
+ * @param count 重复次数
+ * @returns 重复后的字符串
+ */
 export function repeat(str: string, count: number) {
   let result = ''
   for (let i = 0; i < count; i++)
@@ -139,25 +184,41 @@ export function repeat(str: string, count: number) {
 }
 
 /**
- * 替换指定字符串的指定区间内字符为固定字符
- * @param str
- * @param start
- * @param end
- * @param char
+ * 隐藏字符串中指定范围内的字符
+ *
+ * @param str 要处理的字符串
+ * @param start 开始隐藏的起始位置（包含该位置），默认为0
+ * @param end 结束隐藏的结束位置（不包含该位置），如果大于字符串长度，则自动调整为字符串长度
+ * @param char 用于替换隐藏字符的字符
+ * @returns 返回处理后的字符串
  */
 export function replace(str: string, start: number, end: number, char: string) {
   if (isEmpty(str))
     return str
-  if (start > end || start > str.length)
-    return str
   if (start < 0)
     start = 0
+  if (end < 0)
+    end = str.length + end + 1
   if (end > str.length)
     end = str.length
+  if (start > end || start > str.length)
+    return str
 
   return str.substring(0, start) + repeat(char, end - start) + str.substring(end, str.length)
 }
 
+/**
+ * 默认使用'*'隐藏字符串中指定范围内的字符
+ *
+ * @param str 要处理的字符串
+ * @param start 隐藏范围的起始索引（包含）
+ * @param end 隐藏范围的结束索引（不包含）
+ * @returns 隐藏指定范围字符后的新字符串
+ * @example
+ * 1. StringUtil.hide('1234567890', 2, 6)    // '12******7890'
+ * 2. StringUtil.hide('1234567890', -2, 6)   // '********7890'
+ * ```
+ */
 export function hide(str: string, start: number, end: number) {
   return replace(str, start, end, Char.ASTERISK)
 }

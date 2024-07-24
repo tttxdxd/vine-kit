@@ -35,7 +35,7 @@ export function isEmptyObject(val: object): boolean {
  *
  * @category ObjectUtil
  */
-export function mergeDeep<T>(original: T, patch: DeepPartial<T>, mergeArray = false): T {
+export function mergeDeep<T>(original: T, patch?: DeepPartial<T>, mergeArray = false): T {
   const o = original as any
   const p = patch as any
 
@@ -126,6 +126,7 @@ export function set(object: any, path: string | string[], value: any) {
     result = result[key]
   }
   result[keys[keys.length - 1]] = value
+  return true
 }
 
 /**

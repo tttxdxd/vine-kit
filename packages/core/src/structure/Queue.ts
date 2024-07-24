@@ -52,7 +52,7 @@ export class Queue<T> extends AbstractContainer<T> {
   /**
    * O(1)
    */
-  front(): T | undefined {
+  peek(): T | undefined {
     if (this._length === 0)
       return undefined
 

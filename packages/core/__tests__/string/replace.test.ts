@@ -42,4 +42,9 @@ describe('replace', () => {
     const result = StringUtil.replace('hello', -1, 1, '*')
     expect(result).toEqual('*ello')
   })
+
+  it('should throw if end < 0', () => {
+    const result = StringUtil.replace('hello', 1, -1, '*')
+    expect(result).toEqual('h****')
+  })
 })

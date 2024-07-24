@@ -7,8 +7,10 @@ import * as DesensitizedUtil from './desensitized'
 import * as Validator from './validator'
 import * as RandomUtil from './random'
 import * as MathUtil from './math'
+import * as TreeUtil from './tree'
 
 export * from './general'
+export * from './pipe'
 
 export * from './string'
 export * from './object'
@@ -21,4 +23,15 @@ export * from './events'
 export * from './nanoid'
 export * from './validator'
 
-export { ObjectUtil, ArrayUtil, StringUtil, PromiseUtil, RegexUtil, DesensitizedUtil, RandomUtil, MathUtil, Validator }
+export {
+  ObjectUtil,
+  ArrayUtil,
+  StringUtil,
+  PromiseUtil,
+  RegexUtil,
+  DesensitizedUtil,
+  RandomUtil,
+  MathUtil,
+  TreeUtil,
+  Validator,
+}

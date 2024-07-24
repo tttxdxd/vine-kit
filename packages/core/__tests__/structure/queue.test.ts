@@ -19,7 +19,7 @@ describe('queue', () => {
 
     expect(queue.empty()).toBe(false)
     expect(queue.size()).toBe(4)
-    expect(queue.front()).toBe(1)
+    expect(queue.peek()).toBe(1)
   })
 
   it('should pop elements from the queue', () => {
@@ -28,7 +28,7 @@ describe('queue', () => {
     const firstElement = queue.pop()
     expect(firstElement).toBe(1)
     expect(queue.size()).toBe(3)
-    expect(queue.front()).toBe(2)
+    expect(queue.peek()).toBe(2)
 
     queue.pop()
     queue.pop()
@@ -36,7 +36,7 @@ describe('queue', () => {
 
     expect(queue.empty()).toBe(true)
     expect(queue.size()).toBe(0)
-    expect(queue.front()).toBeUndefined()
+    expect(queue.peek()).toBeUndefined()
   })
 
   it('should clear the queue', () => {
@@ -45,7 +45,7 @@ describe('queue', () => {
 
     expect(queue.empty()).toBe(true)
     expect(queue.size()).toBe(0)
-    expect(queue.front()).toBeUndefined()
+    expect(queue.peek()).toBeUndefined()
   })
 
   it('should handle edge cases', () => {
@@ -57,6 +57,6 @@ describe('queue', () => {
     expect(singleElement).toBe(1)
     expect(queue.empty()).toBe(true)
     expect(queue.size()).toBe(0)
-    expect(queue.front()).toBeUndefined()
+    expect(queue.peek()).toBeUndefined()
   })
 })

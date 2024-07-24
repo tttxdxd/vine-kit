@@ -52,7 +52,7 @@ export function isPromise<T = any>(val: unknown): val is Promise<T> {
 export const isNaN = (val: any): boolean => isNumber(val) && Number.isNaN(val)
 export const isArrayLike = (val: any): val is ArrayLike<any> => !isNullish(val) && isNumber(val.length)
 
-export const isConstructor = (val: any): boolean => val === 'constructor'
+export const isConstructor = (val: any): val is new () => any => isFunction(val) && val?.prototype?.constructor?.name
 export function isInstanceOf<T extends new (...args: any[]) => any>(val: unknown, type: T, isStrict: boolean): boolean {
   if (!val || typeof val !== 'object')
     return false
@@ -72,3 +72,11 @@ export function isWeakMap(val: unknown): val is WeakMap<object, any> {
 export function isWeakSet(val: unknown): val is WeakSet<object> {
   return toTypeString(val) === '[object WeakSet]'
 }
+
+export const isInterger = (val: unknown): val is number => Number.isInteger(val)
+export const isFloat = (val: unknown): val is number => isNumber(val) && !Number.isNaN(val)
+
+export const isNumberConstructor = (val: unknown): val is NumberConstructor => val === Number
+export const isStringConstructor = (val: unknown): val is StringConstructor => val === String
+export const isBooleanConstructor = (val: unknown): val is BooleanConstructor => val === Boolean
+export const isDateConstructor = (val: unknown): val is DateConstructor => val === Date

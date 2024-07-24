@@ -1,31 +1,16 @@
 {
   "compilerOptions": {
-    "target": "es2018",
-    "jsx": "preserve",
-    "lib": [
-      "esnext"
-    ],
+    "target": "es2021",
+    "lib": ["esnext"],
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
     "module": "esnext",
     "moduleResolution": "node",
     "paths": {
-      "vine-kit": [
-        "./packages/vine-kit/src/index.ts"
-      ],
-      "@vine-kit/core": [
-        "./packages/core/src/index.ts"
-      ],
-      "@vine-kit/model/locales/*": [
-        "./packages/model/src/locales/*.ts"
-      ],
-      "@vine-kit/model/*": [
-        "./packages/model/src/index.ts"
-      ],
-      "@vine-kit/grape": [
-        "./packages/grape/src/index.ts"
-      ],
-      "@vine-kit/jce-compiler": [
-        "./packages/jce-compiler/src/index.ts"
-      ]
+      "vine-kit": ["./packages/vine-kit/src/index.ts"],
+      "@vine-kit/core": ["./packages/core/src/index.ts"],
+      "@vine-kit/schema": ["./packages/schema/src/index.ts"],
+      "@vine-kit/flow": ["./packages/flow/src/index.ts"]
     },
     "resolveJsonModule": true,
     "types": [
