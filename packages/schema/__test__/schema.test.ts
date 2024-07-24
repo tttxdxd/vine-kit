@@ -1,6 +1,10 @@
-import { describe } from 'vitest'
+import { describe, it } from 'vitest'
 
 describe('schema', () => {
+  it('empty', () => {
+
+  })
+
   // it('basic schema', () => {
   //   const PeopleSchema = schema({
   //     id: String,
