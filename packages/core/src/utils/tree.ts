@@ -1,4 +1,4 @@
-import { groupBy, isString } from ".."
+import { groupBy, isString } from '..'
 
 interface TreeNode<T extends Record<string, any>> {
   id: string | number
@@ -42,10 +42,11 @@ export function build<T extends Record<string, any>>(list: T[], parentId: string
 }
 
 function buildTree<T extends Record<string, any>>(map: Record<string, T[]>, parentId: string | number, config: TreeNodeConfig, depth: number = 0) {
-  if (config.deep !== 0 && depth >= config.deep) return []
+  if (config.deep !== 0 && depth >= config.deep)
+    return []
 
   const list = map[parentId] ?? []
-  const tree: TreeNode<T>[] = list.map(item => {
+  const tree: TreeNode<T>[] = list.map((item) => {
     const nodeId = item[config.idKey]
     const nodeParentId = item[config.parentIdKey]
     const nodeWeight = item[config.weightKey] ?? 0

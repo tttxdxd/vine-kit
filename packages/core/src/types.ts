@@ -1,4 +1,3 @@
-/* eslint-disable ts/ban-types */
 /**
  * Promise, or maybe not
  */

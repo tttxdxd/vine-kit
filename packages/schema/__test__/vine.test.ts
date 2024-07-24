@@ -1,6 +1,6 @@
-import { describe, expect, expectTypeOf, it } from 'vitest'
-import type { InstanceTypeOf, TypeOf, VineCtor, VineFieldCtor } from '../src'
-import { Float, Literal, Null, Nullable, ObjectType, Optional, Type, Undefined, getInstance, meta, schema } from '../src'
+import { describe, expectTypeOf, it } from 'vitest'
+import type { InstanceTypeOf, VineFieldCtor } from '../src'
+import { Literal, Null, ObjectType, Optional, Type, Undefined, getInstance, meta, schema } from '../src'
 
 const getType = <T extends VineFieldCtor>(Ctor: T): InstanceTypeOf<T>['__type__'] => getInstance<T>(Ctor)[Type]
 

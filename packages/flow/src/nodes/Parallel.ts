@@ -1,4 +1,4 @@
-import type { INodeComponent, NodeCtor } from '../node'
+import type { NodeCtor } from '../node'
 import { NodeComponent } from '../node'
 import type { NodeConfig } from '.'
 

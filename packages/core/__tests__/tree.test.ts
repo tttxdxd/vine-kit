@@ -8,7 +8,7 @@ describe('tree', () => {
     expect(result.length).toBe(2)
     expect(result).toMatchObject([
       { id: 1, label: 'Apple', parentId: 0, children: [] },
-      { id: 2, label: 'Balana', parentId: 0, children: [] }
+      { id: 2, label: 'Balana', parentId: 0, children: [] },
     ])
   })
 
@@ -23,12 +23,15 @@ describe('tree', () => {
     expect(result.length).toBe(2)
     expect(result).toMatchObject([
       {
-        id: 1, label: 'Apple', parentId: 0, children: [
+        id: 1,
+        label: 'Apple',
+        parentId: 0,
+        children: [
           { id: 3, label: 'Apple 1', parentId: 1, children: [] },
-          { id: 4, label: 'Apple 2', parentId: 1, children: [] }
-        ]
+          { id: 4, label: 'Apple 2', parentId: 1, children: [] },
+        ],
       },
-      { id: 2, label: 'Balana', parentId: 0, children: [] }
+      { id: 2, label: 'Balana', parentId: 0, children: [] },
     ])
   })
 

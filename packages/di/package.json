@@ -33,6 +33,7 @@
     "stub": "unbuild --stub"
   },
   "dependencies": {
+    "@vine-kit/core": "workspace:*",
     "reflect-metadata": "^0.2.2"
   }
 }

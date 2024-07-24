@@ -1,5 +1,4 @@
-import { describe, expect, expectTypeOf, it } from 'vitest'
-import { Type, getInstance, schema } from '../src'
+import { describe } from 'vitest'
 
 describe('schema', () => {
   // it('basic schema', () => {

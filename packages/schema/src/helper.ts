@@ -1,13 +1,12 @@
-/* eslint-disable ts/ban-types */
 import { Type, VineType } from './vine'
 import type { TypeOf, VineFieldCtor } from './vine'
 
 export class VineMeta extends VineType {
-  readonly [Type]: TypeOf<this['type']>
+  declare readonly [Type]: TypeOf<this['type']>
 
-  type: VineFieldCtor
-  descriptors: {}
-  groups: {}
+  declare type: VineFieldCtor
+  declare descriptors: {}
+  declare groups: {}
 
   static extend<
     T extends new () => VineMeta,
@@ -42,8 +41,8 @@ export type TypeOfFields<T extends VineModelFields> = {
 }
 
 abstract class VineSchema extends VineType {
-  readonly [Type]: TypeOfFields<this['fields']>
-  fields: VineModelFields
+  declare readonly [Type]: TypeOfFields<this['fields']>
+  declare fields: VineModelFields
 }
 
 export function schema<

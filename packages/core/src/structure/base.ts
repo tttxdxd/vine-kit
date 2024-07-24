@@ -52,13 +52,17 @@ export abstract class AbstractContainer<T> {
 export type CompareFn<T> = (l: T, r: T) => number
 
 export const Compare: CompareFn<any> = (l, r) => {
-  if (l > r) return 1
-  if (l < r) return -1
+  if (l > r)
+    return 1
+  if (l < r)
+    return -1
   return 0
 }
 
 export const CompareReverse: CompareFn<any> = (l, r) => {
-  if (l > r) return -1
-  if (l < r) return 1
+  if (l > r)
+    return -1
+  if (l < r)
+    return 1
   return 0
 }

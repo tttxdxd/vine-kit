@@ -31,7 +31,7 @@ describe('priority queue', () => {
     expect(queue.peek()).toBe(2)
 
     expect(queue.pop()).toBe(2)
-    expect(queue.pop()).toBe(3) 
+    expect(queue.pop()).toBe(3)
     expect(queue.pop()).toBe(4)
 
     expect(queue.empty()).toBe(true)

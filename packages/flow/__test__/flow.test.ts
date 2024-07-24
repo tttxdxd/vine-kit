@@ -1,5 +1,5 @@
-import { describe, expect, expectTypeOf, it } from 'vitest'
-import { Context, IF, IFNodeComponent, NodeComponent, Sequence, createFlow, defineContext } from '../src'
+import { describe, expect, it } from 'vitest'
+import { IF, IFNodeComponent, NodeComponent, Sequence, createFlow, defineContext } from '../src'
 
 const TotalContext = defineContext({ total: 0 })
 

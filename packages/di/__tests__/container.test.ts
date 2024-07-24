@@ -30,7 +30,12 @@ describe('di Container', () => {
 
   it('can bind a class', () => {
     interface Helloable { hello: () => string }
-    container.bindClass<Helloable>(tokenSymbol, class { count = 1; hello() { return `hello world ${this.count++}` } }, Scope.Transient)
+    container.bindClass<Helloable>(tokenSymbol, class {
+      count = 1
+      hello() {
+        return `hello world ${this.count++}`
+      }
+    }, Scope.Transient)
 
     expect(container.get<Helloable>(tokenSymbol).hello()).toBe('hello world 1')
     expect(container.get<Helloable>(tokenSymbol).hello()).toBe('hello world 1')
@@ -39,7 +44,12 @@ describe('di Container', () => {
 
   it('can bind a class in singleton scope', () => {
     interface Helloable { hello: () => string }
-    container.bindClass<Helloable>(tokenSymbol, class { count = 1; hello() { return `hello world ${this.count++}` } }, Scope.Singleton)
+    container.bindClass<Helloable>(tokenSymbol, class {
+      count = 1
+      hello() {
+        return `hello world ${this.count++}`
+      }
+    }, Scope.Singleton)
 
     expect(container.get<Helloable>(tokenSymbol).hello()).toBe('hello world 1')
     expect(container.get<Helloable>(tokenSymbol).hello()).toBe('hello world 2')

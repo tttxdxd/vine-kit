@@ -63,7 +63,6 @@ export class DecoratorManager {
    * @param decoratorNameKey
    * @param target
    * @param propertyKey
-   * @returns
    */
   static getMetadata<
     K extends InjectionKey<any>,

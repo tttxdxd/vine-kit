@@ -1,4 +1,3 @@
-
 enum TimerLevel {
   Second = 'Second',
   Minute = 'Minute',
@@ -7,7 +6,7 @@ enum TimerLevel {
 }
 
 interface TimerOptions {
-  level?: TimerLevel,
+  level?: TimerLevel
 }
 type TimerConfig = Required<TimerOptions>
 
@@ -18,13 +17,14 @@ export class Timer {
     Hour: 60 * 60 * 1000,
     Day: 24 * 60 * 60 * 1000,
   }
+
   static DEFAULT_CONFIG: TimerConfig = {
     level: TimerLevel.Second,
   }
 
-  private config: TimerConfig;
-  private timer?: NodeJS.Timeout;
-  private nextTime: number = 0;
+  private config: TimerConfig
+  private timer?: NodeJS.Timeout
+  private nextTime: number = 0
   private callback: () => void
 
   constructor(callback: () => void, options?: TimerOptions) {

@@ -121,7 +121,7 @@ export function notEmptyArray<T>(val: T[]): val is NonEmptyArray<T> {
  *
  * @param val 要访问的数组，类型为 readonly T[] 或 T[]，表示只读数组或可变数组
  * @param index 要访问的索引位置，可以是负数，-n 表示从数组末尾数第 n 个元素
- * @returns 索引处的元素，如果索引有效；否则，返回 undefined
+ * @returns {T|undefined} 索引处的元素，如果索引有效；否则，返回 undefined
  */
 export function at(val: readonly [], index: number): undefined
 export function at<T>(val: readonly T[], index: number): T
@@ -201,12 +201,6 @@ export function some<T>(iterable: Iterable<T> | ArrayLike<T>, fn: (val: T) => bo
 
 /**
  * 将给定的可迭代对象或类数组对象中的元素使用指定的函数进行累加，并返回累加结果。
- *
- * @template T 可迭代对象或类数组对象的元素类型。
- * @template U 累加函数的返回值类型。
- * @param iterable 要累加的可迭代对象或类数组对象。
- * @param fn 用于累加每个元素的函数。它接受四个参数：累加器的当前值（previousValue），可迭代对象的当前元素（currentValue），当前元素的索引（currentIndex），以及可迭代对象本身（array）。
- * @param initialValue 可选。累加器的初始值。如果未提供，则使用可迭代对象中的第一个元素作为初始值。
  * @returns 累加结果。
  */
 export function reduce<T>(iterable: Iterable<T> | ArrayLike<T>, callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T): T

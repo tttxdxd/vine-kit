@@ -1,10 +1,10 @@
-import { isUndefined } from "..";
-import { AbstractContainer } from "./base";
+import { isUndefined } from '..'
+import { AbstractContainer } from './base'
 
 /**
  * 基于链表的队列
  */
-export class LinkedList<T> extends AbstractContainer<T>  {
+export class LinkedList<T> extends AbstractContainer<T> {
   private _head?: ListNode<T>
   private _tail?: ListNode<T>
 
@@ -30,7 +30,8 @@ export class LinkedList<T> extends AbstractContainer<T>  {
       if (isUndefined(this._tail)) {
         this._head = node
         this._tail = node
-      } else {
+      }
+      else {
         this._tail.next = node
         this._tail = node
       }
@@ -39,7 +40,8 @@ export class LinkedList<T> extends AbstractContainer<T>  {
   }
 
   pop() {
-    if (isUndefined(this._head)) return
+    if (isUndefined(this._head))
+      return
 
     const item = this._head.val
     this._head = this._head.next
@@ -50,7 +52,6 @@ export class LinkedList<T> extends AbstractContainer<T>  {
   peek() {
     return this._head
   }
-
 }
 
 class ListNode<T> {
@@ -58,7 +59,7 @@ class ListNode<T> {
   next?: ListNode<T>
 
   constructor(val: T) {
-    this.val = val;
-    this.next = undefined;
+    this.val = val
+    this.next = undefined
   }
 }

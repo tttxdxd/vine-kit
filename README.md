@@ -1,4 +1,4 @@
-<p align="center"> 
+<p align="center">
 </p>
 
 <h1 align="center">
@@ -15,7 +15,6 @@ A set of tools for JavaScript.
 <a href="./README_CN.md">中文</a>
 </p>
 
-
 <h4 align="center">
 
 </h4>
@@ -23,8 +22,6 @@ A set of tools for JavaScript.
 <br>
 
 ## Features
-
-
 
 ```bash
 $ npm install vine-kit

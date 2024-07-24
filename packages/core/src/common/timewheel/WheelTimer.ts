@@ -1,7 +1,4 @@
-
-
 export class WheelTimer {
-
   start() {
 
   }
@@ -10,4 +7,3 @@ export class WheelTimer {
 
   }
 }
-

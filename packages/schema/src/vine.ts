@@ -1,4 +1,3 @@
-/* eslint-disable ts/ban-types */
 import { isBoolean, isBooleanConstructor, isFloat, isInterger, isNumber, isNumberConstructor, isString, isStringConstructor } from '@vine-kit/core'
 import type { BasicCtor } from './types'
 
@@ -6,7 +5,7 @@ export const Type = '__type__' as const
 
 export type TypeOf<T extends VineFieldCtor | VineType> =
   T extends BasicCtor ? ReturnType<T> :
-    T extends new () => { '__type__': infer U } ? U :
+    T extends new () => { __type__: infer U } ? U :
       T extends VineType ? T['__type__'] :
         never
 
@@ -26,23 +25,23 @@ export type VineCtor<T extends VineType = VineType> = (new () => T)
 export type VineFieldCtor = BasicCtor | VineCtor
 
 export class Number extends VineType {
-  readonly [Type]: number
+  declare readonly [Type]: number
   static validate = isNumber
 }
 export class String extends VineType {
-  readonly [Type]: string
+  declare readonly [Type]: string
   static validate = isString
 }
 export class Boolean extends VineType {
-  readonly [Type]: boolean
+  declare readonly [Type]: boolean
   static validate = isBoolean
 }
 export class Int extends VineType {
-  readonly [Type]: number
+  declare readonly [Type]: number
   static validate = isInterger
 }
 export class Float extends VineType {
-  readonly [Type]: number
+  declare readonly [Type]: number
   static validate = isFloat
 }
 
@@ -57,7 +56,7 @@ export type TypeOfField<T> = T extends VineFieldCtor
     ? undefined
     : never
 export abstract class ObjectType extends VineType {
-  readonly [Type]: {
+  declare readonly [Type]: {
     [key in keyof this as SchemaField<this, key>]: TypeOfField<this[key]>
   }
 }
@@ -88,7 +87,7 @@ export const Null = Literal(null)
 export const Undefined = Literal(undefined)
 
 export abstract class UnionType extends VineType {
-  readonly [Type]: TypeOf<this['value'][number]>
+  declare readonly [Type]: TypeOf<this['value'][number]>
   abstract value: VineFieldCtor[]
 }
 

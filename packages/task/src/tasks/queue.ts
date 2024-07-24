@@ -12,7 +12,7 @@ export class TaskQueue implements ITaskQueue {
     return ''
   }
 
-  async getTaskStatus(taskId: string): Promise<{ status: string, progress: number } | null> {
+  async getTaskStatus(_taskId: string): Promise<{ status: string, progress: number } | null> {
     return null
   }
 
@@ -28,7 +28,15 @@ export class TaskQueue implements ITaskQueue {
     return ''
   }
 
-  async loadState(state: string): Promise<void> {
+  async loadState(_state: string): Promise<void> {
+
+  }
+
+  addEventListener(_listener: ITaskEventListener) {
+
+  }
+
+  removeEventListener(_listener: ITaskEventListener) {
 
   }
 }

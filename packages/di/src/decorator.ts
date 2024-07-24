@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import { isObject, isString, isUndefined, notUndefined } from '@vine-kit/core'
+import { isObject, isUndefined, notUndefined } from '@vine-kit/core'
 import { container } from './container'
 import type { InjectionToken } from './types'
 import type { Scope } from './provider'
