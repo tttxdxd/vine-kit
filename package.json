@@ -6,7 +6,7 @@
   "packageManager": "pnpm@9.5.0",
   "scripts": {
     "taze": "taze minor -wIr && pnpm -r --parallel run update-post",
-    "build": "rimraf packages/*/dist && pnpm -r --filter=./packages/* run build && pnpm -r run build-post",
+    "build": "rimraf packages/*/dist --glob && pnpm -r --filter=./packages/* run build && pnpm -r run build-post",
     "dev": "nr stub",
     "deploy": "nr build",
     "lint": "eslint --cache .",
