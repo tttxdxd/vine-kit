@@ -41,6 +41,10 @@ export function remap(value: number, oldMin: number, oldMax: number, newMin: num
  * @param numbers - 要相加的数字数组。数组可以是任何长度，并且可以包含任意数量的数字。
  * @returns 数组中所有数字的总和。
  */
-export function sum(...numbers: number[]) {
-  return numbers.reduce((a, b) => a + b, 0)
+export function sum(numbers: number[]): number
+export function sum(...numbers: number[]): number
+export function sum(number: number | number[], ...numbers: number[]) {
+  if (Array.isArray(number))
+    return number.reduce((a, b) => a + b, 0)
+  return numbers.reduce((a, b) => a + b, number)
 }
