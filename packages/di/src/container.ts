@@ -1,8 +1,9 @@
 import { assert } from '@vine-kit/core'
 
 import type { Provider } from './provider'
-import { Scope, isClassProvider, isFactoryProvider, isNormalToken, isProvider, isValueProvider } from './provider'
+import { Scope, isAliasProvider, isClassProvider, isFactoryProvider, isNormalToken, isProvider, isValueProvider } from './provider'
 import type { AbstractType, InjectionToken, Type } from './types'
+import { DIError } from './error'
 
 export class Container {
   private _registry: Map<InjectionToken, Provider> = new Map()
@@ -13,13 +14,17 @@ export class Container {
   }
 
   bind<T>(provider: Provider<T>) {
-    assert(isProvider(provider), 'invalid provider')
-    assert(!this.has(provider.token), `${this.getTokenName(provider.token)} is already bound`)
+    assert(isProvider(provider), () => DIError.invalidProviderError(provider))
+    assert(!this.has(provider.token), () => DIError.hasProviderError(provider.token))
 
-    provider.scope = provider.scope ?? Scope.Singleton
-    if (!isValueProvider(provider)) {
-      provider.args = provider.args || []
+    if (isAliasProvider(provider)) {
+      assert(!!this.resolveToken(provider.useAlias), () => DIError.noProviderError(provider.useAlias))
     }
+    else
+      if (isClassProvider(provider) || isFactoryProvider(provider)) {
+        provider.scope = provider.scope ?? Scope.Singleton
+        provider.args = provider.args ?? []
+      }
 
     this._registry.set(provider.token, provider)
     return provider
@@ -41,23 +46,37 @@ export class Container {
     return this.bind({ token, useValue: value, scope })
   }
 
+  bindAlias<T>(token: InjectionToken<T>, alias: InjectionToken<T>) {
+    return this.bind({ token, useAlias: alias })
+  }
+
   rebind<T>(provider: Provider<T>) {
     return this.remove(provider).bind(provider)
   }
 
   get<T>(token: InjectionToken<T>): T {
-    assert(this.has(token), `${this.getTokenName(token)} is already bound`)
+    assert(this.has(token), () => DIError.noProviderError(token))
 
     const provider = this._registry.get(token)!
 
-    if (provider.scope !== Scope.Singleton || typeof provider.instance === 'undefined') {
-      provider.instance = isFactoryProvider(provider)
-        ? provider.useFactory()
+    if (isClassProvider(provider)) {
+      if (provider.scope !== Scope.Singleton || typeof provider.instance === 'undefined') {
         // eslint-disable-next-line new-cap
-        : isClassProvider(provider) ? new provider.useClass(...(provider.args.map(t => this.get(t)))) : provider.useValue
+        provider.instance = new provider.useClass(...(provider.args.map(t => this.get(t))))
+      }
+      return provider.instance
+    }
+    else if (isFactoryProvider(provider)) {
+      if (provider.scope !== Scope.Singleton || typeof provider.instance === 'undefined') {
+        provider.instance = provider.useFactory()
+      }
+      return provider.instance
+    }
+    else if (isAliasProvider(provider)) {
+      return this.get(provider.useAlias)
     }
 
-    return provider.instance
+    return provider.useValue
   }
 
   remove<T>(tokenOrProvider: InjectionToken<T> | Provider<T>) {
@@ -95,6 +114,22 @@ export class Container {
   clear() {
     this._registry.clear()
     return this
+  }
+
+  private resolveToken(token: InjectionToken<any>) {
+    let provider = this._registry.get(token)
+    const paths: InjectionToken[] = [token]
+
+    while (provider && isAliasProvider(provider)) {
+      if (paths.includes(provider.useAlias)) {
+        throw DIError.aliasCircularError(paths, token)
+      }
+
+      paths.push(provider.useAlias)
+      provider = this._registry.get(provider.useAlias)
+    }
+
+    return provider
   }
 
   private getTokenName(token: InjectionToken) {

@@ -69,6 +69,12 @@ describe('di Container', () => {
     expect(container.get(tokenSymbol)).toBe(1)
   })
 
+  it('can bind an alias', () => {
+    container.bindValue(tokenSymbol, 0)
+    container.bindAlias('a', tokenSymbol)
+    expect(container.get('a')).toBe(0)
+  })
+
   it('snapshot and restore', () => {
     container.bindValue(tokenSymbol, 0)
     container.snapshot()
@@ -81,7 +87,7 @@ describe('di Container', () => {
     expect(container.get(tokenSymbol)).toBe(0)
   })
 
-  it('can get a non-existing token', () => {
-    expect(() => container.get(tokenSymbol)).toThrowError()
+  it('should be throw no provider error', () => {
+    expect(() => container.get(tokenSymbol)).toThrowError('No provider for Symbol(tokenSymbol)')
   })
 })
