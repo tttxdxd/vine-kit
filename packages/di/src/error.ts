@@ -1,4 +1,4 @@
-import { isObject } from 'vine-kit'
+import { isObject } from '@vine-kit/core'
 import type { InjectionToken } from './types'
 
 export class DIError extends Error {

@@ -1,7 +1,7 @@
 import { assert } from '@vine-kit/core'
 
 import type { Provider } from './provider'
-import { Scope, isAliasProvider, isClassProvider, isFactoryProvider, isNormalToken, isProvider, isValueProvider } from './provider'
+import { Scope, isAliasProvider, isClassProvider, isFactoryProvider, isNormalToken, isProvider } from './provider'
 import type { AbstractType, InjectionToken, Type } from './types'
 import { DIError } from './error'
 
