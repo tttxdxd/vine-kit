@@ -18,7 +18,7 @@ export function Injectable(options: any, scope?: Scope): ClassDecorator {
     const { token = target, scope } = options
     const paramtypes = Reflect.getMetadata(PARAMTYPES_METADATA, target)
     const params = DecoratorManager.getMetadata(PARAMS_DI_METADATA, target)
-    const args = paramtypes
+    const args = paramtypes ?? []
     // merge
     if (Array.isArray(params)) {
       for (let i = 0; i < params.length; i++) {

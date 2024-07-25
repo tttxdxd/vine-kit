@@ -35,9 +35,10 @@ export function isNormalToken(val: InjectionToken): val is string | symbol {
   return typeof val === 'string' || typeof val === 'symbol'
 }
 
+const notTokenSet = new Set([Object, String, Number, Boolean])
 export function isToken(val: any): val is InjectionToken {
   if (typeof val === 'function') {
-    return [Object, String, Number, Boolean].includes(val)
+    return !notTokenSet.has(val)
   }
   return isNormalToken(val)
 }
