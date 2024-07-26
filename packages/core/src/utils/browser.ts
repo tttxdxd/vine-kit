@@ -8,7 +8,7 @@ import * as Validator from './validator'
 import * as RandomUtil from './random'
 import * as MathUtil from './math'
 import * as TreeUtil from './tree'
-import * as IdUtil from './id'
+import * as IdUtil from './id/browser'
 
 export * from './base'
 
@@ -24,7 +24,7 @@ export * from './promise'
 
 export * from './events'
 export * from './validator'
-export * from './id'
+export * from './id/browser'
 
 export {
   ObjectUtil,

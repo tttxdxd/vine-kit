@@ -17,13 +17,21 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
-      "require": "./dist/index.cjs"
+      "node": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.mjs",
+        "require": "./dist/index.cjs"
+      },
+      "default": {
+        "types": "./dist/browser.d.ts",
+        "import": "./dist/browser.mjs",
+        "require": "./dist/browser.cjs"
+      }
     }
   },
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
+  "browser": "dist/browser.mjs",
   "types": "dist/index.d.ts",
   "files": [
     "dist"

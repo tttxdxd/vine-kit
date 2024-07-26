@@ -1,8 +1,12 @@
 {
   "typescript.tsdk": "node_modules/typescript/lib",
   "cSpell.words": [
+    "antfu",
+    "bumpp",
     "lerp",
     "tagify",
+    "taze",
+    "tttxdxd",
     "unplugin"
   ],
 

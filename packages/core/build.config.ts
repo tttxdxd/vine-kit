@@ -1,12 +1,14 @@
 import { defineBuildConfig } from 'unbuild'
 
 export default defineBuildConfig({
-  entries: [
-    'src/index',
-  ],
-  clean: true,
-  declaration: true,
   rollup: {
-    emitCJS: true,
+    inlineDependencies: true,
+  },
+  hooks: {
+    'rollup:options': function (_, options) {
+      for (const output of options.output as any[]) {
+        output.exports = 'named'
+      }
+    },
   },
 })
