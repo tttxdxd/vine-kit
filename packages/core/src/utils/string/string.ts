@@ -1,4 +1,4 @@
-import { Char, every, isEmpty, some } from '../external'
+import { Char, every, isEmpty, isFunction, isObject, isString, some } from '../external'
 
 /**
  * 字符串是否为空白 空格、全角空格、制表符、换行符，等不可见字符
@@ -221,4 +221,30 @@ export function replace(str: string, start: number, end: number, char: string) {
  */
 export function hide(str: string, start: number, end: number) {
   return replace(str, start, end, Char.ASTERISK)
+}
+
+/**
+ * @param template - 模板字符串，其中包含占位符 {property} 或 {number}
+ * @param...args - 传递给模板的参数，可以是对象或值
+ * @category String
+ * @returns 替换占位符后的字符串
+ * @example
+ * ```js
+ * StringUtil.format('Hello, {0}!', 'world'); // 返回 'Hello, world!'
+ * StringUtil.format('Hello, {name}!', { name: 'John' }); // 返回 'Hello, John!'
+ * ```
+ */
+export function format(template: string, object: Record<string, any>, fallback?: string | ((key: string) => string)): string
+export function format(template: string, ...args: (number | string)[]): string
+export function format(template: string, ...args: any[]) {
+  const [object, fallback] = args
+
+  if (isObject(object)) {
+    return template.replace(/\{(\w+)\}/g, (_, key) => {
+      return object[key] ?? (isFunction(fallback) ? fallback(key) : fallback) ?? key
+    })
+  }
+  return template.replace(/\{(\d+)\}/g, (_, index) => {
+    return args[index]
+  })
 }
