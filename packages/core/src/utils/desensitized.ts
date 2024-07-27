@@ -24,6 +24,10 @@ export function password(password: string): string {
  *
  * @param phone 电话号码字符串
  * @returns 返回格式化后的电话号码字符串
+ * @example
+ * ```js
+ * phone('13800138000') // => '138****8000'
+ * ```
  */
 export function phone(phone: string): string {
   return replace(phone, 3, 7, '*')

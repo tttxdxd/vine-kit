@@ -3,7 +3,6 @@
  *
  * @category RandomUtil
  * @example
- *
  * RandomUtil.random()
  */
 export function random(min: number = 0, max: number = 1): number {
@@ -11,20 +10,19 @@ export function random(min: number = 0, max: number = 1): number {
 }
 
 /**
- * 获取一个随机整数 [0, MAX_SAFE_INTEGER)
+ * Generates a random integer in the range [0, MAX_SAFE_INTEGER).
  *
  * @category RandomUtil
  * @example
  *
- * RandomUtil.randomInt()
- * // => an integer between 0 and MAX_SAFE_INTEGER
+ * RandomUtil.randomInt() // => an integer interval [0, MAX_SAFE_INTEGER)
  */
 export function randomInt(): number
 /**
- * 获取一个随机整数 [0, max)
+ * Generates a random integer in the range [0, maximum).
  *
  * @category RandomUtil
- * @param {number} max 最大值(不含)
+ * @param {number} max maximum
  * @example
  *
  * RandomUtil.randomInt(5)
@@ -32,15 +30,13 @@ export function randomInt(): number
  */
 export function randomInt(max: number): number
 /**
- * 获取一个随机整数 [min, max)
+ * Generates a random integer in the range [maximum, maximum).
  *
  * @category RandomUtil
- * @param {number} min 最小值(包含)
- * @param {number} max 最大值(不含)
+ * @param {number} min maximum
+ * @param {number} max minimum
  * @example
- *
- * RandomUtil.randomInt(0, 5)
- * // => an integer between 0 and 5
+ * RandomUtil.randomInt(0, 5) // => an integer between 0 and 4
  */
 export function randomInt(min: number, max: number): number
 export function randomInt(...args: number[]): number {
@@ -60,7 +56,6 @@ export function randomInt(...args: number[]): number {
  *
  * @category RandomUtil
  * @example
- *
  * RandomUtil.randomBoolean(); // true or false
  */
 export function randomBoolean() {

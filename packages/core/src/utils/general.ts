@@ -1,5 +1,8 @@
 import { toTypeString } from './object'
 
+/**
+ * Always return undefined.
+ */
 export function NOOP() { }
 
 /**
