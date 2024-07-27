@@ -15,7 +15,8 @@
     "stub": "pnpm -r --filter=./packages/* --parallel run stub",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
-    "test:update": "vitest -u"
+    "test:update": "vitest -u",
+    "test:cov": "vitest --coverage"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^2.23.0",
@@ -23,6 +24,7 @@
     "@swc/core": "^1.7.0",
     "@types/node": "^20.14.11",
     "@vine-kit/core": "workspace:*",
+    "@vitest/coverage-v8": "^2.0.4",
     "bumpp": "^9.4.1",
     "eslint": "^9.7.0",
     "lint-staged": "^15.2.7",

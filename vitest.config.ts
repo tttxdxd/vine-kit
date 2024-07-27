@@ -18,6 +18,9 @@ export default defineConfig({
     testTimeout: 30_000,
     name: 'unit',
     exclude: [...defaultExclude],
+    coverage: {
+      include: ['**/src/**'],
+    },
   },
   plugins: [
     // This is required to build the test files with SWC
