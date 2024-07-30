@@ -78,7 +78,7 @@ export function deleteMetadata<T>(key: MetadataKey<T>, target: Target, propertyK
  * It then calls the `defineMetadata` function with the provided key, value, target, and propertyKey.
  */
 export function metadata<T>(key: MetadataKey<T>, value: T): ClassDecorator & PropertyDecorator & MethodDecorator {
-  return function (target: any, propertyKey?: string | symbol) {
+  return function (target: Target, propertyKey?: PropertyKey) {
     defineMetadata(key, value, target, propertyKey)
   }
 }
