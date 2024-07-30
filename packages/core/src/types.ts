@@ -41,3 +41,6 @@ export type Identify<T> = T extends object ? {
 export type ExtractRequiredKeys<T> = keyof Pick<T, {
   [K in keyof T]-?: undefined extends T[K] ? never : K extends string ? K : never
 }[keyof T]>
+
+export type Constructor<T = void> = new (...args: any[]) => T
+export type Fn<T = void> = () => T

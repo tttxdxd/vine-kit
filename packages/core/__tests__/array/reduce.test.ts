@@ -1,5 +1,6 @@
-import { ArrayUtil } from '@vine-kit/core'
 import { describe, expect, it } from 'vitest'
+
+import { ArrayUtil } from '@vine-kit/core'
 
 describe('arrayUtil.reduce', () => {
   it('should reduce an array', () => {

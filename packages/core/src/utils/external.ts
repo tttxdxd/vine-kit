@@ -9,6 +9,7 @@ import * as RandomUtil from './random'
 import * as MathUtil from './math'
 import * as TreeUtil from './tree'
 import * as IdUtil from './id'
+import * as ReflectUtil from './reflect'
 
 export * from './base'
 
@@ -37,5 +38,6 @@ export {
   MathUtil,
   TreeUtil,
   IdUtil,
+  ReflectUtil,
   Validator,
 }
