@@ -1,5 +1,7 @@
 import 'reflect-metadata'
+import type { Constructor } from '@vine-kit/core'
 import { ReflectUtil, isObject, isUndefined, notUndefined } from '@vine-kit/core'
+
 import { container } from './container'
 import type { InjectionToken } from './types'
 import type { Scope } from './provider'
@@ -97,9 +99,52 @@ export function ReturnType(type: any) {
   return Reflect.metadata(ReflectUtil.DESIGN_RETURNTYPE, type)
 }
 
-export function Controller(token?: InjectionToken): ClassDecorator {
-  return (target: any) => {
-    Injectable(token)(target)
-    ReflectUtil.defineMetadata(ReflectUtil.DESIGN_TYPE, target, target)
+interface DecoratorFactoryOptions {
+  type: 'class' | 'property' | 'method'
+  normalize: (...args: any[]) => any
+}
+interface DecoratorTypeDict {
+  class: ClassDecorator
+  property: PropertyDecorator
+  method: MethodDecorator
+}
+
+export class DecoratorFactory {
+  static create<T extends DecoratorFactoryOptions>(options: T):
+    ((...args: Parameters<T['normalize']>) => DecoratorTypeDict[T['type']]) & {
+      key: symbol
+      targets: Constructor[]
+      values: ReturnType<T['normalize']>[]
+    } {
+    const key = Symbol('')
+    const decorator = (...args: any[]) => {
+      return (target: any, propertyKey?: string | symbol) => {
+        const value = options.normalize?.(...args)
+
+        ReflectUtil.defineMetadata(key, value, target, propertyKey)
+      }
+    }
+    Object.defineProperty(decorator, 'key', {
+      get() {
+        return key
+      },
+      enumerable: false,
+      configurable: false,
+    })
+    Object.defineProperty(decorator, 'targets', {
+      get() {
+        return ReflectUtil.getMetadataTargets(key)
+      },
+      enumerable: false,
+      configurable: false,
+    })
+    Object.defineProperty(decorator, 'values', {
+      get() {
+        return ReflectUtil.listMetadata(key)
+      },
+      enumerable: false,
+      configurable: false,
+    })
+    return decorator as any
   }
 }

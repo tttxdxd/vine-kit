@@ -4,10 +4,13 @@ import { isUndefined, notNull, notUndefined } from './general'
 type Target = Constructor | object
 type PropertyKey = string | symbol
 
-// eslint-disable-next-line ts/no-wrapper-object-types, unused-imports/no-unused-vars
-export declare interface MetadataKey<T = any> extends String { }
+// eslint-disable-next-line unused-imports/no-unused-vars, ts/no-wrapper-object-types
+export interface MetadataSymbolKey<T = any> extends Symbol { }
+// eslint-disable-next-line unused-imports/no-unused-vars, ts/no-wrapper-object-types
+export interface MetadataStringKey<T = any> extends String { }
+export type MetadataKey<T = any> = MetadataSymbolKey<T> | MetadataStringKey<T>
 
-export function defineMetadateKey<T>(key: string): MetadataKey<T> {
+export function defineMetadateKey<T>(key: MetadataKey<T>): MetadataKey<T> {
   return key
 }
 
@@ -249,6 +252,8 @@ export function listOwnMeta<T>(key: MetadataKey<T>, target?: Target) {
 export function listMeta<T>(key: MetadataKey<T>): IClassMeta<T>[]
 /**
  * Retrieves a list of metadata for properties based on the provided metadata key and target.
+ *
+ * @template T - The type of the metadata.
  *
  * @param key The metadata key used to retrieve the metadata.
  * @param target The target object whose property metadata is to be retrieved.

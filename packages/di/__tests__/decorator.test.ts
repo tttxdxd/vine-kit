@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { Inject, Injectable, Scope, container } from '../src'
+import { DecoratorFactory, Inject, Injectable, Scope, container } from '../src'
 
 describe('di decorator', () => {
   describe('injectable', () => {
@@ -87,5 +87,23 @@ describe('di decorator', () => {
       expect(instanceA.b).toBeInstanceOf(B)
       expect(instanceA.b.value).toBe(1)
     })
+  })
+
+  describe('custom decorator', () => {
+    const Component = DecoratorFactory.create({
+      type: 'class' as const,
+      normalize(name?: string) {
+        return { name }
+      },
+    })
+
+    @Component()
+    class A { }
+
+    @Component('alias')
+    class B { }
+
+    expect(Component.targets).toEqual([A, B])
+    expect(Component.values).toEqual([{ name: undefined }, { name: 'alias' }])
   })
 })
