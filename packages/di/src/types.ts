@@ -1,9 +1,3 @@
-export interface AbstractType<T> {
-  prototype: T
-}
+import type { Constructor } from '@vine-kit/core'
 
-export interface Type<T> {
-  new(...args: any[]): T
-}
-
-export type InjectionToken<T = any> = Type<T> | string | symbol
+export type InjectionToken<T = any> = Constructor<T> | string | symbol

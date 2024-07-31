@@ -44,3 +44,4 @@ export type ExtractRequiredKeys<T> = keyof Pick<T, {
 
 export type Constructor<T = void> = new (...args: any[]) => T
 export type Fn<T = void> = () => T
+export type AnyFn = (...args: any[]) => any

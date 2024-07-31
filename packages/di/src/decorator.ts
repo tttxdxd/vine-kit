@@ -1,4 +1,5 @@
 import 'reflect-metadata'
+import type { AnyFn } from '@vine-kit/core'
 import { ReflectUtil, isObject, isUndefined, notUndefined } from '@vine-kit/core'
 import { container } from './container'
 import type { InjectionToken } from './types'
@@ -82,5 +83,24 @@ export function Optional(): PropertyDecorator & ParameterDecorator {
     else {
       throw new Error('@Optional() is invalid')
     }
+  }
+}
+
+export function Type(type: any) {
+  return Reflect.metadata(ReflectUtil.DESIGN_TYPE, type)
+}
+
+export function ParamTypes(type: any) {
+  return Reflect.metadata(ReflectUtil.DESIGN_PARAMTYPES, type)
+}
+
+export function ReturnType(type: any) {
+  return Reflect.metadata(ReflectUtil.DESIGN_RETURNTYPE, type)
+}
+
+export function Controller(token?: InjectionToken): ClassDecorator {
+  return (target: any) => {
+    Injectable(token)(target)
+    ReflectUtil.defineMetadata(ReflectUtil.DESIGN_TYPE, target, target)
   }
 }

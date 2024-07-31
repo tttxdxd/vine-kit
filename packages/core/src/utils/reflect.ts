@@ -60,10 +60,10 @@ export function defineMetadata<T>(key: MetadataKey<T>, value: T, target: Target,
 
 export function deleteMetadata<T>(key: MetadataKey<T>, target: Target, propertyKey?: PropertyKey) {
   if (isUndefined(propertyKey))
-    getOrCreateClassMetaMap(key).delete(target)
+    getClassMetaMap(key)?.delete(target)
   else
-    getOrCreatePropMetaMap(key, target).delete(propertyKey)
-  getOrCreateMetadataMap(target, propertyKey).delete(key)
+    getPropMetaMap(key, target)?.delete(propertyKey)
+  getMetadataMap(target, propertyKey)?.delete(key)
 }
 
 /**
@@ -94,8 +94,7 @@ export function metadata<T>(key: MetadataKey<T>, value: T): ClassDecorator & Pro
  * @returns The metadata value associated with the provided key, or undefined if no metadata is found.
  */
 export function getOwnMetadata<T>(key: MetadataKey<T>, target: Target, propertyKey?: PropertyKey): T | undefined {
-  const metadataMap = getOrCreateMetadataMap(target, propertyKey)
-  return metadataMap.get(key)
+  return getMetadataMap(target, propertyKey)?.get(key)
 }
 
 /**
@@ -111,8 +110,7 @@ export function getOwnMetadata<T>(key: MetadataKey<T>, target: Target, propertyK
  * @returns The metadata value associated with the provided key, or undefined if no metadata is found.
  */
 export function getMetadata<T>(key: MetadataKey<T>, target: Target, propertyKey?: PropertyKey): T | undefined {
-  const metadataMap = getOrCreateMetadataMap(target, propertyKey)
-  const metadata = metadataMap.get(key)
+  const metadata = getMetadataMap(target, propertyKey)?.get(key)
 
   if (notUndefined(metadata))
     return metadata
@@ -135,8 +133,7 @@ export function getMetadata<T>(key: MetadataKey<T>, target: Target, propertyKey?
  * @returns Returns `true` if the target has own metadata entry for the provided key, `false` otherwise.
  */
 export function hasOwnMetadata<T>(key: MetadataKey<T>, target: Target, propertyKey?: PropertyKey): boolean {
-  const metadataMap = getOrCreateMetadataMap(target, propertyKey)
-  return metadataMap.has(key)
+  return getMetadataMap(target, propertyKey)?.has(key) ?? false
 }
 
 /**
@@ -169,7 +166,6 @@ export function hasMetadata<T>(key: MetadataKey<T>, target: Target, propertyKey?
  *   myMethod() {}
  * }
  *
- * // Assuming getOrCreateMetadataMap has been implemented to manage metadata
  * Reflect.defineMetadata('key1', 'value1', MyClass);
  * Reflect.defineMetadata('key2', 'value2', MyClass.prototype, 'myMethod');
  *
@@ -180,8 +176,8 @@ export function hasMetadata<T>(key: MetadataKey<T>, target: Target, propertyKey?
  * console.log(getOwnMetadataKeys(MyClass.prototype, 'myMethod')); // Outputs: ['key2']
  */
 export function getOwnMetadataKeys(target: Target, propertyKey?: PropertyKey): MetadataKey[] {
-  const metadataMap = getOrCreateMetadataMap(target, propertyKey)
-  return Array.from(metadataMap.keys())
+  const metadataMap = getMetadataMap(target, propertyKey)
+  return isUndefined(metadataMap) ? [] : Array.from(metadataMap.keys())
 }
 
 /**
@@ -206,6 +202,20 @@ export function getMetadataKeys(target: Target, propertyKey?: PropertyKey): Meta
 }
 
 /**
+ * Retrieves an array of targets that have been annotated with a specific metadata key.
+ *
+ * @param key - The metadata key for which the targets should be retrieved. This key should be unique and
+ *              used to identify the metadata associated with classes, methods, or properties.
+ * @returns An array of targets (classes, methods, or properties) that have been annotated with the
+ *          specified metadata key. If no targets are found, an empty array is returned.
+ */
+export function getMetadataTargets(key: MetadataKey): Target[] {
+  const targetMap = getClassMetaMap(key)
+
+  return isUndefined(targetMap) ? [] : Array.from(targetMap.keys())
+}
+
+/**
  * Lists the own metadata entries associated with a given key, either for a class or a specific property within a class.
  *
  * @param key - The unique key used to identify the metadata entries.
@@ -220,9 +230,9 @@ export function listOwnMeta<T>(key: MetadataKey<T>): IClassMeta<T>[]
 export function listOwnMeta<T>(key: MetadataKey<T>, target: Target): IPropMeta<T>[]
 export function listOwnMeta<T>(key: MetadataKey<T>, target?: Target): IMeta<T>[]
 export function listOwnMeta<T>(key: MetadataKey<T>, target?: Target) {
-  if (isUndefined(target))
-    return Array.from(getOrCreateClassMetaMap(key).values())
-  return Array.from(getOrCreatePropMetaMap(key, target).values())
+  const map = isUndefined(target) ? getClassMetaMap(key) : getPropMetaMap(key, target)
+
+  return isUndefined(map) ? [] : Array.from(map.values())
 }
 
 /**
@@ -301,6 +311,10 @@ function getPrototypeOf(O: any): Target | null {
   return constructor
 }
 
+function getMetadataMap(target: Target, propertyKey?: PropertyKey) {
+  return metadataRegistry.get(target)?.get(propertyKey)
+}
+
 function getOrCreateMetadataMap(target: Target, propertyKey?: PropertyKey) {
   let targetMap = metadataRegistry.get(target)
   if (!targetMap) {
@@ -315,13 +329,21 @@ function getOrCreateMetadataMap(target: Target, propertyKey?: PropertyKey) {
   return metadataMap
 }
 
-function getOrCreateClassMetaMap(key: MetadataKey): Map<Target, IClassMeta> {
+function getClassMetaMap(key: MetadataKey) {
+  return classRegistry.get(key)
+}
+
+function getOrCreateClassMetaMap(key: MetadataKey) {
   let map = classRegistry.get(key)
   if (!map) {
     map = new Map()
     classRegistry.set(key, map)
   }
   return map
+}
+
+function getPropMetaMap(key: MetadataKey, target: Target) {
+  return registry.get(key)?.get(target)
 }
 
 function getOrCreatePropMetaMap(key: MetadataKey, target: Target): Map<PropertyKey, IPropMeta> {
