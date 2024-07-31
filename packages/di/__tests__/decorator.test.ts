@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { Inject, Injectable, Scope, container, createDecorator } from '../src'
+import { Inject, Injectable, Scope, container } from '../src'
 
 describe('di decorator', () => {
   describe('injectable', () => {

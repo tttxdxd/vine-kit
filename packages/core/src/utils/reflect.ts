@@ -216,17 +216,20 @@ export function getMetadataTargets(key: MetadataKey): Target[] {
 }
 
 /**
- * Lists the own metadata entries associated with a given key, either for a class or a specific property within a class.
+ * Retrieves a list of metadata for classes based on the provided metadata key.
  *
- * @param key - The unique key used to identify the metadata entries.
- * @param target - (Optional) The target object whose property metadata should be listed.
- *                 If omitted, the function will list class-level metadata instead.
- *                 The `Target` type should be a class constructor or an instance of a class.
- * @returns An array containing the metadata entries associated with the given key.
- *          If `target` is provided, returns the metadata entries for the specific property.
- *          If `target` is omitted, returns the metadata entries for the class itself.
+ * @param key he metadata key used to retrieve the metadata.
+ * @returns An array of metadata for classes.
  */
 export function listOwnMeta<T>(key: MetadataKey<T>): IClassMeta<T>[]
+
+/**
+ * Retrieves a list of metadata for properties based on the provided metadata key and target.
+ *
+ * @param key The metadata key used to retrieve the metadata.
+ * @param target The target object whose property metadata is to be retrieved.
+ * @returns An array of metadata for properties.
+ */
 export function listOwnMeta<T>(key: MetadataKey<T>, target: Target): IPropMeta<T>[]
 export function listOwnMeta<T>(key: MetadataKey<T>, target?: Target): IMeta<T>[]
 export function listOwnMeta<T>(key: MetadataKey<T>, target?: Target) {
@@ -236,14 +239,21 @@ export function listOwnMeta<T>(key: MetadataKey<T>, target?: Target) {
 }
 
 /**
- * Lists all metadata associated with a given key for the target object and its prototype chain.
+ * Retrieves a list of metadata for classes based on the provided metadata key.
  *
- * @param key The key to search for metadata.
- * @param target The object whose metadata should be listed. If not provided, it defaults to listing metadata of the object's own properties.
- * @returns An array of metadata objects, where each object contains information about a specific metadata entry associated with the given key.
- *          The returned list includes metadata entries from the target object and its prototype chain, excluding duplicates based on the propertyKey.
+ * @template T The type of the metadata.
+ *
+ * @param key The metadata key used to retrieve the metadata.
+ * @returns An array of metadata for classes.
  */
 export function listMeta<T>(key: MetadataKey<T>): IClassMeta<T>[]
+/**
+ * Retrieves a list of metadata for properties based on the provided metadata key and target.
+ *
+ * @param key The metadata key used to retrieve the metadata.
+ * @param target The target object whose property metadata is to be retrieved.
+ * @returns An array of metadata for properties.
+ */
 export function listMeta<T>(key: MetadataKey<T>, target: Target): IPropMeta<T>[]
 export function listMeta<T>(key: MetadataKey<T>, target?: Target): IMeta<T>[]
 export function listMeta<T>(key: MetadataKey<T>, target?: Target) {
@@ -263,15 +273,19 @@ export function listMeta<T>(key: MetadataKey<T>, target?: Target) {
 }
 
 /**
- * Retrieves a list of metadata values associated with a given key.
- * Optionally, a target can be specified to filter the metadata based on it.
+ * Retrieves a list of metadata values for classes based on the provided metadata key.
  *
- * @param key - The unique key for which to retrieve metadata values.
- * @param target - (Optional) The target for which to filter the metadata.
- * If not provided, all metadata entries for the given key will be returned.
- * @returns An array of the metadata values associated with the given key and (optional) target.
+ * @param key The metadata key used to retrieve the metadata values.
+ * @returns An array of metadata values for classes.
  */
 export function listMetadata<T>(key: MetadataKey<T>): T[]
+/**
+ * Retrieves a list of metadata values for properties based on the provided metadata key and target.
+ *
+ * @param key The metadata key used to retrieve the metadata values.
+ * @param target The target object whose property metadata values are to be retrieved.
+ * @returns An array of metadata values for properties.
+ */
 export function listMetadata<T>(key: MetadataKey<T>, target: Target): T[]
 export function listMetadata<T>(key: MetadataKey<T>, target?: Target) {
   return listMeta(key, target).map(meta => meta.value)

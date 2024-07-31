@@ -212,19 +212,24 @@ export function reduce(iterable: Iterable<any> | ArrayLike<any>, fn: (previousVa
 }
 
 /**
- * Creates an object composed of keys generated from the results of running each element of the iterable
- * through the given key function. The order of grouped values is determined by the order they occur in the iterable.
- * The resulting object has each key's value as an array of elements responsible for generating the key.
- * However, this implementation differs slightly in that it only keeps the last encountered value for each key,
- * overwriting previous values for the same key.
+ * Creates an object composed of keys generated from the results of running each element of
+ * `iterable` through `keyFn`. The corresponding value of each key is the last element
+ * responsible for generating the key.
  *
- * @param iterable The iterable or array-like object to iterate over.
- * @param keyFn The function invoked per iteration or the property name to use as the key.
- *               If a function is provided, it is invoked with the current value as the argument and its return value is used as the key.
- *               If a string (representing a property name) is provided, the value of the property on the current value is used as the key.
+ * @param iterable The collection to iterate over.
+ * @param key The key to use for grouping elements.
  * @returns Returns the composed aggregate object.
  */
 export function keyBy<T>(iterable: Iterable<T> | ArrayLike<T>, key: keyof T): Record<string, T>
+/**
+ * Creates an object composed of keys generated from the results of running each element of
+ * `iterable` through `fn`. The corresponding value of each key is the last element
+ * responsible for generating the key.
+ *
+ * @param iterable The collection to iterate over.
+ * @param fn The function to generate the key for each element.
+ * @returns Returns the composed aggregate object.
+ */
 export function keyBy<T>(iterable: Iterable<T> | ArrayLike<T>, fn: (val: T) => string): Record<string, T>
 export function keyBy<T>(iterable: Iterable<T> | ArrayLike<T>, keyFn: ((val: T) => string) | keyof T): Record<string, T> {
   return reduce(iterable, (acc, val) => {
@@ -236,29 +241,22 @@ export function keyBy<T>(iterable: Iterable<T> | ArrayLike<T>, keyFn: ((val: T) 
 }
 
 /**
- * Groups elements of an iterable or array-like object into a record by the specified key function or property name.
+ * Groups the elements of `iterable` by a specified key and returns an object whose properties
+ * are arrays of elements grouped by the specified key.
  *
- * @param iterable The iterable or array-like object to be grouped.
- * @param keyFn A function that returns a string key for each element, or a string representing the property name to use as the key.
- * @returns A record where each key is the result of the key function or property name applied to an element,
- *          and each value is an array of elements that map to that key.
- *
- * @example
- * const people = [
- *   { name: 'Alice', age: 25 },
- *   { name: 'Bob', age: 30 },
- *   { name: 'Charlie', age: 25 }
- * ];
- *
- * // Using a function as the key
- * const groupedByAge = groupBy(people, person => `${person.age}`);
- * console.log(groupedByAge); // { "25": [{ name: 'Alice', age: 25 }, { name: 'Charlie', age: 25 }], "30": [{ name: 'Bob', age: 30 }] }
- *
- * // Using a property name as the key
- * const groupedByName = groupBy(people, 'name');
- * console.log(groupedByName); // { Alice: [{ name: 'Alice', age: 25 }], Bob: [{ name: 'Bob', age: 30 }], Charlie: [{ name: 'Charlie', age: 25 }] }
+ * @param iterable The collection to iterate over.
+ * @param key The key to use for grouping elements.
+ * @returns Returns the composed aggregate object with grouped elements.
  */
 export function groupBy<T>(iterable: Iterable<T> | ArrayLike<T>, key: keyof T): Record<string, T[]>
+/**
+ * Groups the elements of `iterable` by a key generated from a function and returns an object
+ * whose properties are arrays of elements grouped by the generated key.
+ *
+ * @param iterable The collection to iterate over.
+ * @param fn The function to generate the key for each element.
+ * @returns  Returns the composed aggregate object with grouped elements.
+ */
 export function groupBy<T>(iterable: Iterable<T> | ArrayLike<T>, fn: (val: T) => string): Record<string, T[]>
 export function groupBy<T>(iterable: Iterable<T> | ArrayLike<T>, keyFn: ((val: T) => string) | keyof T): Record<string, T[]> {
   return reduce(iterable, (acc, val) => {

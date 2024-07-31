@@ -1,4 +1,5 @@
-import type { InjectionToken, Type } from './types'
+import type { Constructor } from '@vine-kit/core'
+import type { InjectionToken } from './types'
 
 export enum Scope {
   Singleton,
@@ -7,7 +8,7 @@ export enum Scope {
 
 export interface ClassProvider<T> {
   token: InjectionToken<T>
-  useClass: Type<T>
+  useClass: Constructor<T>
   scope?: Scope
   instance?: T
   args: any[]

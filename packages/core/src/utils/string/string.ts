@@ -1,4 +1,4 @@
-import { Char, every, isEmpty, isFunction, isObject, isString, some } from '../external'
+import { Char, every, isEmpty, isFunction, isObject, some } from '../external'
 
 /**
  * 字符串是否为空白 空格、全角空格、制表符、换行符，等不可见字符

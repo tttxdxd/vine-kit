@@ -45,14 +45,16 @@ export function remap(value: number, oldMin: number, oldMax: number, newMin: num
 }
 
 /**
- * Sums up all the numbers provided, either as an initial array or as a sequence of arguments.
- *
- * @param number - The first parameter can be either a single number or an array of numbers.
- *                 If an array is provided, it is summed first, and then the remaining numbers are added to the sum.
- * @param numbers - Additional numbers to be added to the sum. These are provided as rest parameters.
- * @returns The total sum of all numbers provided.
+ * Calculates the sum of a numeric value.
+ * @param numbers an array of numbers
+ * @returns The sum of the numeric values in the array.
  */
 export function sum(numbers: number[]): number
+/**
+ * Calculates the sum of a numeric value.
+ * @param numbers 0 or more numbers
+ * @returns The sum of the numeric values in the array.
+ */
 export function sum(...numbers: number[]): number
 export function sum(number: number | number[], ...numbers: number[]) {
   if (Array.isArray(number))

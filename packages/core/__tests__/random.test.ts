@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { RandomUtil, range } from '@vine-kit/core'
+import { RandomUtil } from '@vine-kit/core'
 
 describe('randomUtil', () => {
   it('should return a number between 0 and Number.MAX_SAFE_INTEGER when no arguments are provided', () => {

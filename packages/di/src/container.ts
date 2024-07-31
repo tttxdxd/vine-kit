@@ -1,8 +1,9 @@
+import type { Constructor } from '@vine-kit/core'
 import { assert } from '@vine-kit/core'
 
 import type { Provider } from './provider'
 import { Scope, isAliasProvider, isClassProvider, isFactoryProvider, isNormalToken, isProvider } from './provider'
-import type { AbstractType, InjectionToken, Type } from './types'
+import type { InjectionToken } from './types'
 import { DIError } from './error'
 
 export class Container {
@@ -30,8 +31,8 @@ export class Container {
     return provider
   }
 
-  bindClass<T>(token: AbstractType<T> | Type<T>, scope?: Scope): Provider<T>
-  bindClass<T>(token: InjectionToken<T>, type: Type<T>, scope?: Scope): Provider<T>
+  bindClass<T>(token: Constructor<T>, scope?: Scope): Provider<T>
+  bindClass<T>(token: InjectionToken<T>, type: Constructor<T>, scope?: Scope): Provider<T>
   bindClass(token: any, arg1?: any, arg2?: any) {
     if (isNormalToken(token))
       return this.bind({ token, useClass: arg1, scope: arg2, args: [] })
