@@ -90,20 +90,22 @@ describe('di decorator', () => {
   })
 
   describe('custom decorator', () => {
-    const Component = DecoratorFactory.create({
-      type: 'class' as const,
-      normalize(name?: string) {
-        return { name }
-      },
+    it('should create a custom decorator', () => {
+      const Component = DecoratorFactory.create({
+        type: 'class' as const,
+        normalize(name?: string) {
+          return { name }
+        },
+      })
+
+      @Component()
+      class A { }
+
+      @Component('alias')
+      class B { }
+
+      expect(Component.targets).toEqual([A, B])
+      expect(Component.values).toEqual([{ name: undefined }, { name: 'alias' }])
     })
-
-    @Component()
-    class A { }
-
-    @Component('alias')
-    class B { }
-
-    expect(Component.targets).toEqual([A, B])
-    expect(Component.values).toEqual([{ name: undefined }, { name: 'alias' }])
   })
 })
