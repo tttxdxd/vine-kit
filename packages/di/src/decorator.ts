@@ -109,12 +109,23 @@ interface DecoratorTypeDict {
   method: MethodDecorator
 }
 
+/**
+ * Creates a decorator factory.
+ */
 export class DecoratorFactory {
+  /**
+   * Creates a new decorator factory.
+   *
+   * @param options - The options for creating the decorator factory.
+   * @param options.type - Specifies the type of decorator to create ('class', 'property', or 'method').
+   * @param options.normalize - A function that normalizes the arguments passed to the decorator.
+   * @returns A decorator factory function and additional metadata properties.
+   */
   static create<T extends DecoratorFactoryOptions>(options: T):
     ((...args: Parameters<T['normalize']>) => DecoratorTypeDict[T['type']]) & {
-      key: symbol
-      targets: Constructor[]
-      values: ReturnType<T['normalize']>[]
+      readonly key: unique symbol
+      readonly targets: Constructor[]
+      readonly values: ReturnType<T['normalize']>[]
     } {
     const key = Symbol('')
     const decorator = (...args: any[]) => {
