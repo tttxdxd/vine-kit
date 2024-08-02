@@ -40,14 +40,20 @@ describe('stringUtil.trim', () => {
   })
 
   it('should handle null input', () => {
-    expect(
-      StringUtil.trim(null!),
-    ).toEqual(null)
+    const str = null
+    const result = StringUtil.trim(str!)
+    expect(result).toEqual(null)
   })
 
   it('should handle undefined input', () => {
-    expect(
-      StringUtil.trim(undefined!),
-    ).toEqual(undefined)
+    const str = undefined
+    const result = StringUtil.trim(str!)
+    expect(result).toEqual(undefined)
+  })
+
+  it('should trim with custom trim characters', () => {
+    const str = '  +++ \n hello++++ \n '
+    const result = StringUtil.trim(str, StringUtil.TrimMode.Both, c => ['\n', ' ', '+'].includes(c))
+    expect(result).toEqual('hello')
   })
 })

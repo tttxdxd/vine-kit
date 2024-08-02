@@ -1,14 +1,17 @@
 import { Char, every, isEmpty, isFunction, isObject, some } from '../external'
 
 /**
- * 字符串是否为空白 空格、全角空格、制表符、换行符，等不可见字符
- * @param str
+ * Checks if a string is blank. A string is considered blank if it is empty or consists only of whitespace characters.
+ *
+ * @param str - The string to be checked. This parameter is optional.
+ * @returns `true` if the string is blank, otherwise `false`.
+ *
  * @example
  * ```js
- * StringUtil.isBlank()         // true
- * StringUtil.isBlank('')       // true
- * StringUtil.isBlank(' \t\n')  // true
- * StringUtil.isBlank('abc')    // false
+ * isBlank()         // true
+ * isBlank('')       // true
+ * isBlank(' \t\n')  // true
+ * isBlank('abc')    // false
  * ```
  */
 export function isBlank(str?: string): boolean {
@@ -16,14 +19,17 @@ export function isBlank(str?: string): boolean {
 }
 
 /**
- * 字符串是否不为空白 空格、全角空格、制表符、换行符，等不可见字符
- * @param str
+ * Checks if a string is not blank. A string is considered blank if it is empty or consists only of whitespace characters.
+ *
+ * @param str - The string to be checked.
+ * @returns `true` if the string is not blank, otherwise `false`.
+ *
  * @example
  * ```js
- * StringUtil.notBlank()         // false
- * StringUtil.notBlank('')       // false
- * StringUtil.notBlank(' \t\n')  // false
- * StringUtil.notBlank('abc')    // true
+ * notBlank()         // false
+ * notBlank('')       // false
+ * notBlank(' \t\n')  // false
+ * notBlank('abc')    // true
  * ```
  */
 export function notBlank(str?: string): boolean {
@@ -31,14 +37,20 @@ export function notBlank(str?: string): boolean {
 }
 
 /**
- * 多个字符串是否为包含空白字符串
- * @param val
+ * Checks if an array of strings contains any blank strings.
+ *
+ * @param val - The array of strings to check.
+ * @returns `true` if the array contains a blank string, otherwise `false`.
+ *
+ * A string is considered blank if it is empty or consists only of whitespace characters.
+ *
  * @example
  * ```js
- * StringUtil.hasBlank([])         // true
- * StringUtil.hasBlank([''])       // true
- * StringUtil.hasBlank([' \t\n'])  // true
- * StringUtil.hasBlank(['abc'])    // false
+ * hasBlank([])         // true
+ * hasBlank([''])       // true
+ * hasBlank([' \t\n'])  // true
+ * hasBlank(['abc'])    // false
+ * hasBlank(['abc', '']) // true
  * ```
  */
 export function hasBlank(val: string[]): boolean {
@@ -46,14 +58,17 @@ export function hasBlank(val: string[]): boolean {
 }
 
 /**
- * 检查字符串是否都为数字组成
- * @param str
+ * Checks if a string consists entirely of numeric characters.
+ *
+ * @param str - The string to be checked.
+ * @returns `true` if the string is numeric, otherwise `false`.
+ *
  * @example
  * ```js
- * StringUtil.isNumeric()         // false
- * StringUtil.isNumeric('')       // false
- * StringUtil.isNumeric('123')    // true
- * StringUtil.isNumeric('abc')    // false
+ * isNumeric('12345') // true
+ * isNumeric('abc123') // false
+ * isNumeric('') // false
+ * isNumeric(null) // false
  * ```
  */
 export function isNumeric(str: string): boolean {
@@ -61,15 +76,19 @@ export function isNumeric(str: string): boolean {
 }
 
 /**
- * 检查字符串是否以指定的字符串开始
- * @param str 要检查的字符串
- * @param searchString 要搜索的字符串。
- * @param position 可选参数，指定从字符串的哪个位置开始搜索，默认为 0。
+ * Checks if a string starts with a specified search string at a given position.
+ *
+ * @param str - The string to be searched.
+ * @param searchString - The string to search for at the start of `str`.
+ * @param position - Optional parameter specifying the position in `str` where the search should start. Defaults to 0.
+ * @returns `true` if `str` starts with `searchString` at `position`, otherwise `false`.
+ *
  * @example
  * ```js
- * StringUtil.isStartsWith('abc', 'a')         // true
- * StringUtil.isStartsWith('abc', 'b')         // false
- * StringUtil.isStartsWith('abc', 'a', 1)     // false
+ * isStartsWith('abcdef', 'abc') // true
+ * isStartsWith('abcdef', 'bcd') // false
+ * isStartsWith('abcdef', 'def', 3) // true
+ * isStartsWith('abcdef', 'abc', 1) // false
  * ```
  */
 export function isStartsWith(str: string, searchString: string, position: number = 0) {
@@ -85,15 +104,18 @@ export function isStartsWith(str: string, searchString: string, position: number
 }
 
 /**
- * 检查字符串是否以指定的字符串结束
- * @param str 要检查的字符串
- * @param searchString 要搜索的字符串。
- * @param endPosition 可选参数，指定从字符串的哪个位置结束搜索，默认为要检查的字符串的长度。
+ * Checks if a string ends with a specified search string at a given end position.
+ *
+ * @param str - The string to be searched.
+ * @param searchString - The string to search for at the end of `str`.
+ * @param endPosition - Optional parameter specifying the position in `str` where the search should end. Defaults to the length of `str`.
+ * @returns `true` if `str` ends with `searchString` at `endPosition`, otherwise `false`.
+ *
  * @example
  * ```js
- * StringUtil.isEndsWith('abc', 'c')         // true
- * StringUtil.isEndsWith('abc', 'b')         // false
- * StringUtil.isEndsWith('abc', 'c', 2)     // false
+ * isEndsWith('abcdef', 'def') // true
+ * isEndsWith('abcdef', 'def', 5) // false
+ * isEndsWith('abcdef', 'cde', 5) // true
  * ```
  */
 export function isEndsWith(str: string, searchString: string, endPosition: number = str.length) {
@@ -115,16 +137,26 @@ export enum TrimMode {
 }
 
 /**
- * 去除字符串的首尾空白
- * @param str
- * @param mode
- * @param predicate
+ * Trim function to remove specific characters from the start and/or end of a string.
+ *
+ * @param str - The string to trim.
+ * @param mode - TrimMode enum value specifying the trim mode: Start, Both, or End. Default is Both.
+ * @param predicate - A function that takes a character and returns a boolean indicating whether the character should be trimmed. Default is Char.isBlank.
+ * @returns The trimmed string.
+ *
  * @example
  * ```js
- * 1. StringUtil.trim('   abc   ')         // 'abc'
- * 2. StringUtil.trim('   abc   ', TrimMode.Start)     // 'abc   '
- * 3. StringUtil.trim('   abc   ', TrimMode.End)      // '   abc'
- * 4. StringUtil.trim('   abc   ', TrimMode.Both)      // 'abc'
+ * // Basic usage
+ * trim('   Hello, World!   ') // 'Hello, World!'
+ *
+ * // Trim only from the start
+ * trim('   Hello, World!   ', TrimMode.Start) // 'Hello, World!   '
+ *
+ * // Trim only from the end
+ * trim('   Hello, World!   ', TrimMode.End) // '   Hello, World!'
+ *
+ * // Custom predicate to trim digits
+ * trim('123Hello456', TrimMode.Both, char => /\d/.test(char)) // 'Hello'
  * ```
  */
 export function trim(str: string, mode: TrimMode = TrimMode.Both, predicate: (char: string) => boolean = Char.isBlank) {
@@ -150,31 +182,46 @@ export function trim(str: string, mode: TrimMode = TrimMode.Both, predicate: (ch
 }
 
 /**
- * 去除字符串开头的空白字符
+ * Removes whitespace characters from the beginning of a string.
  *
- * @param str 要处理的字符串
- * @returns 返回处理后的字符串
+ * @param str - The string to trim.
+ * @returns The string with leading whitespace removed.
+ *
+ * @example
+ * ```js
+ * trimStart('   Hello World') // 'Hello World'
+ * ```
  */
-export function trimStart(str: string) {
-  return trim(str, -1)
+export function trimStart(str: string, predicate?: (char: string) => boolean) {
+  return trim(str, -1, predicate)
 }
 
 /**
- * 去除字符串末尾的空白字符
+ * Removes whitespace characters from the end of a string.
  *
- * @param str 待处理的字符串
- * @returns 返回处理后的字符串
+ * @param str - The string to trim.
+ * @returns The string with trailing whitespace removed.
+ *
+ * @example
+ * ```js
+ * trimEnd('Hello World   ') // 'Hello World'
+ * ```
  */
-export function trimEnd(str: string) {
-  return trim(str, 1)
+export function trimEnd(str: string, predicate?: (char: string) => boolean) {
+  return trim(str, 1, predicate)
 }
 
 /**
- * 重复字符串指定次数
+ * Repeats a string a specified number of times.
  *
- * @param str 要重复的字符串
- * @param count 重复次数
- * @returns 重复后的字符串
+ * @param str - The string to be repeated.
+ * @param count - The number of times to repeat the string.
+ * @returns The repeated string.
+ *
+ * @example
+ * ```js
+ * repeat('abc', 3) // 'abcabcabc'
+ * ```
  */
 export function repeat(str: string, count: number) {
   let result = ''
@@ -184,13 +231,18 @@ export function repeat(str: string, count: number) {
 }
 
 /**
- * 隐藏字符串中指定范围内的字符
+ * Replaces a specified range of characters in a string with a repeated character.
  *
- * @param str 要处理的字符串
- * @param start 开始隐藏的起始位置（包含该位置），默认为0
- * @param end 结束隐藏的结束位置（不包含该位置），如果大于字符串长度，则自动调整为字符串长度
- * @param char 用于替换隐藏字符的字符
- * @returns 返回处理后的字符串
+ * @param str - The original string to be modified.
+ * @param start - The starting index of the range to be replaced (inclusive).
+ * @param end - The ending index of the range to be replaced (exclusive).
+ * @param char - The character to replace the range with.
+ * @returns The modified string with the specified range replaced.
+ *
+ * @example
+ * ```js
+ * replace('Hello, World!', 0, 5, '*') // Returns '*****o, World!'
+ * ```
  */
 export function replace(str: string, start: number, end: number, char: string) {
   if (isEmpty(str))
@@ -208,15 +260,16 @@ export function replace(str: string, start: number, end: number, char: string) {
 }
 
 /**
- * 默认使用'*'隐藏字符串中指定范围内的字符
+ * Hides a specified range of characters in a string by replacing them with asterisks (*).
  *
- * @param str 要处理的字符串
- * @param start 隐藏范围的起始索引（包含）
- * @param end 隐藏范围的结束索引（不包含）
- * @returns 隐藏指定范围字符后的新字符串
+ * @param str - The original string.
+ * @param start - The starting index of the range to be hidden (inclusive).
+ * @param end - The ending index of the range to be hidden (exclusive).
+ * @returns The modified string with the specified range hidden.
+ *
  * @example
- * 1. StringUtil.hide('1234567890', 2, 6)    // '12******7890'
- * 2. StringUtil.hide('1234567890', -2, 6)   // '********7890'
+ * ```js
+ * hide('1234567890', 2, 6)  // Returns '12******7890'
  * ```
  */
 export function hide(str: string, start: number, end: number) {
@@ -224,14 +277,23 @@ export function hide(str: string, start: number, end: number) {
 }
 
 /**
- * @param template - 模板字符串，其中包含占位符 {property} 或 {number}
- * @param...args - 传递给模板的参数，可以是对象或值
- * @category String
- * @returns 替换占位符后的字符串
+ * Replaces placeholders in a template string with provided values.
+ *
+ * If the first argument after the template is an object, placeholders in the form `{key}` will be replaced with the corresponding values from the object.
+ * If a placeholder key is not found in the object, the fallback value or function will be used.
+ * If the fallback is a function, it will be called with the missing key as an argument.
+ *
+ * If the first argument after the template is not an object, placeholders in the form `{index}` will be replaced with the corresponding values from the argument list.
+ *
+ * @param template - The template string with placeholders.
+ * @param args - Values to replace the placeholders in the template.
+ * @returns The formatted string with placeholders replaced.
+ *
  * @example
- * ```js
- * StringUtil.format('Hello, {0}!', 'world'); // 返回 'Hello, world!'
- * StringUtil.format('Hello, {name}!', { name: 'John' }); // 返回 'Hello, John!'
+ * ```typescript
+ * format('Hello, {name}!', { name: 'Alice' }); // 'Hello, Alice!'
+ * format('The {0} {1} {2}', 'quick', 'brown', 'fox'); // 'The quick brown fox'
+ * format('Item {0} is {1}', 1, 'apple'); // 'Item 1 is apple'
  * ```
  */
 export function format(template: string, object: Record<string, any>, fallback?: string | ((key: string) => string)): string

@@ -3,19 +3,29 @@ import { isFunction, isNullish, isUndefined } from './general'
 import { randomInt } from './random'
 
 /**
- * 生成指定范围内的数字数组
+ * Generate a range of numbers in an array.
  *
- * @param stop 结束值
- * @returns 返回一个数字数组，包含指定范围内的数字
+ * @param stop - The ending value of the range (exclusive, unless step is negative).
+ * @returns An array of numbers from start to stop (exclusive) by the given step.
+ *
+ * @example
+ * range(5)           // [0, 1, 2, 3, 4]
  */
 export function range(stop: number): number[]
 /**
- * 生成指定范围内的数字数组
+ * Generate a range of numbers in an array.
  *
- * @param start 起始值
- * @param stop 结束值
- * @param step 步长，默认为1
- * @returns 返回一个数字数组，包含指定范围内的数字
+ * @param start - The starting value of the range (inclusive).
+ * @param stop - The ending value of the range (exclusive, unless step is negative).
+ * @param step - The increment between each value in the range. If omitted, it defaults to 1 if start is less than stop, or -1 if start is greater than stop.
+ * @returns An array of numbers from start to stop (exclusive) by the given step.
+ *
+ * @example
+ * range(0, 5)        // [0, 1, 2, 3, 4]
+ * range(0, 10, 2)    // [0, 2, 4, 6, 8]
+ * range(10, 0, -2)   // [10, 8, 6, 4, 2]
+ * range(1, 10, 0)    // Throws an error: step must not be 0
+ * range(10, 0)       // [] (empty array, as stop is less than start and no step is provided)
  */
 export function range(start: number, stop: number, step?: number): number[]
 export function range(...args: any): number[] {
@@ -37,6 +47,9 @@ export function range(...args: any): number[] {
  * Convert `Arrayable<T>` to `Array<T>`
  *
  * @category ArrayUtil
+ * @param val - The value to be converted, which can be an array or a single item.
+ * @returns An array containing the elements of `val` if it was already an array,
+ *          or a single-element array containing `val` if it was not an array.
  */
 export function toArray<T>(val?: Nullable<Arrayable<T>>): T[] {
   if (isNullish(val))
@@ -45,13 +58,15 @@ export function toArray<T>(val?: Nullable<Arrayable<T>>): T[] {
 }
 
 /**
- * 将嵌套数组展平为一维数组
+ * Flatten a nested array into a one-dimensional array.
  *
- * @param val 要展平的数组
- * @param depth 展平的深度，默认为1
- * @returns 返回展平后的一维数组
+ * @param val - The nested array to be flattened.
+ * @param depth - The depth of flattening, defaults to 1. If the depth is set to a value greater than 1,
+ *                the function will recursively flatten nested arrays up to the specified depth.
+ *                If the depth is set to 0 or a negative value, all nested arrays will be flattened.
+ * @returns A one-dimensional array containing all elements of the original nested array.
  */
-export function flatten(val: any[], depth: number = 1): any[] {
+export function flatten(val: readonly any[], depth: number = 1): any[] {
   const result: any[] = []
   if (isEmptyArray(val))
     return result
@@ -72,19 +87,22 @@ export function flatten(val: any[], depth: number = 1): any[] {
 }
 
 /**
- * 完全展开嵌套数组
- * @param val - 要展开的数组
- * @returns 展开后的数组
+ * Recursively flattens a deeply nested array into a one-dimensional array.
+ *
+ * @param val - The deeply nested array to be flattened.
+ * @returns A one-dimensional array containing all elements of the original deeply nested array.
  */
-export function flattenDeep(val: any[]): any[] {
+export function flattenDeep(val: readonly any[]): any[] {
   return flatten(val, Number.POSITIVE_INFINITY)
 }
 
 /**
- * 获取打乱后的集合
- * @param val
+ * Shuffles the elements of an array in a random order.
+ *
+ * @param val - The array to be shuffled.
+ * @returns A new array with the elements of the original array in a random order.
  */
-export function shuffle<T>(val: T[]): T[] {
+export function shuffle<T>(val: readonly T[]): T[] {
   const result = [...val]
   for (let i = result.length - 1; i > 0; i--)
     swap(result, i, randomInt(i + 1))
@@ -93,10 +111,11 @@ export function shuffle<T>(val: T[]): T[] {
 }
 
 /**
- * 交换数组中两个元素的位置
- * @param val - 要交换的数组
- * @param i - 第一个元素的索引
- * @param j - 第二个元素的索引
+ * Swaps the positions of two elements in an array.
+ *
+ * @param val - The array in which to swap elements.
+ * @param i - The index of the first element to swap.
+ * @param j - The index of the second element to swap.
  */
 export function swap(val: any[], i: number, j: number) {
   if (i === j)
@@ -107,22 +126,36 @@ export function swap(val: any[], i: number, j: number) {
   val[j] = temp
 }
 
-export function isEmptyArray<T>(val: T[]): val is [] {
+/**
+ * Checks if the given array is empty.
+ *
+ * @param val - The array to be checked.
+ * @returns `true` if the array is empty, `false` otherwise.
+ */
+export function isEmptyArray<T>(val: readonly T[]): val is [] {
   return val.length === 0
 }
 
-export function notEmptyArray<T>(val: T[]): val is NonEmptyArray<T> {
+/**
+ * Checks if the given array is not empty.
+ *
+ * @param val - The array to be checked.
+ * @returns `true` if the array is not empty, `false` otherwise.
+ * This function also serves as a type guard, narrowing the type of `val` to `NonEmptyArray<T>`
+ * if the array is indeed not empty.
+ */
+export function notEmptyArray<T>(val: readonly T[]): val is NonEmptyArray<T> {
   return val.length !== 0
 }
 
 /**
- * 获取数组中指定索引位置的值
- * 如果数组为空，或者索引超出范围，返回 undefined
- * 支持负索引，从数组末尾开始计数，-1 表示最后一个元素
+ * Retrieves the value at the specified index from an array.
+ * Returns `undefined` if the array is empty or the index is out of range.
+ * Supports negative indexing, where -1 indicates the last element.
  *
- * @param val 要访问的数组，类型为 readonly T[] 或 T[]，表示只读数组或可变数组
- * @param index 要访问的索引位置，可以是负数，-n 表示从数组末尾数第 n 个元素
- * @returns {T|undefined} 索引处的元素，如果索引有效；否则，返回 undefined
+ * @param val - The array to access, of type `readonly T[]` or `T[]`, representing a read-only or mutable array.
+ * @param index - The index position to access. Can be negative, where -n means the nth element from the end.
+ * @returns The value at the specified index, or `undefined` if not found.
  */
 export function at(val: readonly [], index: number): undefined
 export function at<T>(val: readonly T[], index: number): T
@@ -138,9 +171,10 @@ export function at<T>(val: readonly T[] | [], index: number): T | undefined {
 }
 
 /**
- * Get last item
+ * Retrieve the last element of an array.
  *
- * @category ArrayUtil
+ * @param val - The array to retrieve the last element from.
+ * @returns The last element of the array, or `undefined` if the array is empty.
  */
 export function last(val: readonly []): undefined
 export function last<T>(val: readonly T[]): T
@@ -149,18 +183,26 @@ export function last<T>(val: readonly T[]): T | undefined {
 }
 
 /**
- * Unique an Array
+ * Removes duplicates from an array, returning a new array with only unique elements.
  *
- * @category ArrayUtil
+ * @param val - The input array, which may contain duplicate elements.
+ * @returns A new array containing only the unique elements from the input array.
  */
 export function unique<T>(val: readonly T[]): T[] {
   return Array.from(new Set(val))
 }
 
 /**
- * Unique an Array by a custom equality function
+ * Removes duplicates from an array based on a custom equality function, returning a new array with only unique elements.
  *
- * @category ArrayUtil
+ * @param val - The input array, which may contain duplicate elements.
+ * @param equalFn - A custom equality function that takes two arguments and returns a boolean indicating whether they are equal.
+ * @returns A new array containing only the unique elements from the input array, based on the provided equality function.
+ *
+ * @example
+ * const arr = [1, 2, 3, 4, 1, 2, 5]
+ * const uniqueArr = uniqueBy(arr, (a, b) => a === b)
+ * console.log(uniqueArr) // [1, 2, 3, 4, 5]
  */
 export function uniqueBy<T>(val: readonly T[], equalFn: (a: any, b: any) => boolean): T[] {
   return val.reduce((acc: T[], cur: any) => {
@@ -172,11 +214,22 @@ export function uniqueBy<T>(val: readonly T[], equalFn: (a: any, b: any) => bool
 }
 
 /**
- * 判断可迭代对象或类数组对象中的元素是否全部满足条件
- * 和 Array.every 不一样的是空数组默认返回 false
- * @param iterable 可迭代对象或类数组对象
- * @param fn 回调函数，用于判断元素是否满足条件，返回布尔值
- * @returns 若存在满足条件的元素，则返回true；否则返回false
+ * Checks if all elements in an iterable or array-like object satisfy a given condition.
+ *
+ * @param iterable - The iterable or array-like object to check.
+ * @param fn - A function that takes an element from the iterable and returns a boolean indicating whether the element satisfies the condition.
+ * @returns `true` if all elements in the iterable satisfy the condition, otherwise `false`.
+ * If the iterable is `null` or `undefined`, returns `false`.
+ * If the iterable is an empty array, returns `false` as well (this behavior might be subject to change in future versions).
+ *
+ * @example
+ * const arr = [1, 2, 3, 4]
+ * const isEven = (num) => num % 2 === 0
+ * console.log(every(arr, isEven)) // false, because not all elements are even
+ *
+ * const str = 'Hello'
+ * const isChar = (char) => typeof char === 'string' && char.length === 1
+ * console.log(every(str, isChar)) // true, because all characters in the string are indeed characters
  */
 export function every<T>(iterable: Iterable<T> | ArrayLike<T>, fn: (val: T) => boolean): boolean {
   if (isNullish(iterable))
@@ -187,11 +240,21 @@ export function every<T>(iterable: Iterable<T> | ArrayLike<T>, fn: (val: T) => b
 }
 
 /**
- * 判断给定可迭代对象或类数组对象中是否至少有一个元素满足指定的测试函数
+ * Checks if at least one element in an iterable or array-like object satisfies a given condition.
  *
- * @param iterable 可迭代对象或类数组对象
- * @param fn 测试函数，接收一个参数并返回一个布尔值
- * @returns 如果可迭代对象或类数组对象中至少有一个元素满足测试函数，则返回true；否则返回false
+ * @param iterable - The iterable or array-like object to check.
+ * @param fn - A function that takes an element from the iterable and returns a boolean indicating whether the element satisfies the condition.
+ * @returns `true` if at least one element in the iterable satisfies the condition, otherwise `false`.
+ * If the iterable is `null` or `undefined`, returns `false`.
+ *
+ * @example
+ * const arr = [1, 2, 3, 4, 5]
+ * const isEven = (num) => num % 2 === 0
+ * console.log(some(arr, isEven)) // true, because there are even numbers in the array
+ *
+ * const str = 'Hello'
+ * const isVowel = (char) => ['a', 'e', 'i', 'o', 'u'].includes(char)
+ * console.log(some(str, isVowel)) // true, because there are vowels in the string
  */
 export function some<T>(iterable: Iterable<T> | ArrayLike<T>, fn: (val: T) => boolean): boolean {
   if (isNullish(iterable))
@@ -201,8 +264,11 @@ export function some<T>(iterable: Iterable<T> | ArrayLike<T>, fn: (val: T) => bo
 }
 
 /**
- * 将给定的可迭代对象或类数组对象中的元素使用指定的函数进行累加，并返回累加结果。
- * @returns 累加结果。
+ * Checks if at least one element in the iterable or array-like object satisfies the provided test function.
+ *
+ * @param iterable An iterable or array-like object.
+ * @param callbackfn A function that takes one argument and returns a boolean, used to test if an element satisfies a condition.
+ * @returns true if at least one element in the iterable or array-like object satisfies the test function; otherwise, false.
  */
 export function reduce<T>(iterable: Iterable<T> | ArrayLike<T>, callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T): T
 export function reduce<T>(iterable: Iterable<T> | ArrayLike<T>, callbackfn: (previousValue: T, currentValue: T, currentIndex: number, array: T[]) => T, initialValue: T): T
@@ -270,9 +336,18 @@ export function groupBy<T>(iterable: Iterable<T> | ArrayLike<T>, keyFn: ((val: T
 }
 
 /**
- * Returns a new array with the elements sorted in ascending order.
+ * Sorts the elements of an iterable or array-like object and returns a new array, without modifying the original.
  *
- * @category ArrayUtil
+ * @param iterable The iterable or array-like object to be sorted.
+ * @param compareFn Optional comparison function used to define the sort order.
+ *                  Defaults to the natural order if not provided.
+ * @returns A new array containing the sorted elements. The original iterable or array-like object remains unchanged.
+ *
+ * @example
+ * const numbers = [5, 2, 8, 9, 4];
+ * const sortedNumbers = toSorted(numbers);
+ * console.log(sortedNumbers); // Output: [2, 4, 5, 8, 9]
+ * console.log(numbers); // Output: [5, 2, 8, 9, 4] (original array unchanged)
  */
 export function toSorted<T>(iterable: Iterable<T> | ArrayLike<T>, compareFn?: (a: T, b: T) => number) {
   if (isNullish(iterable))

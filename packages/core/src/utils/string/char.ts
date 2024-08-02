@@ -15,7 +15,7 @@ export const LF = '\n'
 export const CRLF = '\r\n'
 /** 换页符 */
 export const FF = '\f'
-/** 垂直制表符 */
+/** Vertical Tab 垂直制表符 */
 export const VT = '\v'
 export const DOT = '.'
 export const SLASH = '/'
@@ -43,35 +43,61 @@ export const QUESTION = '?'
 export const EXCLAMATION = '!'
 
 /**
- * 是否为 ASCII 字符
- * @param char
+ * Checks if a character is an ASCII character.
+ *
+ * @param char The character to check.
+ * @returns `true` if the character is ASCII, otherwise `false`.
  */
 export function isASCII(char: string): boolean {
   return char.charCodeAt(0) <= 0x7F // 0x7F = 127
 }
 
+/**
+ * Checks if a character is an uppercase letter.
+ *
+ * @param char The character to check.
+ * @returns `true` if the character is an uppercase letter, otherwise `false`.
+ */
 export function isLetterUpper(char: string): boolean {
   return char >= 'A' && char <= 'Z'
 }
 
+/**
+ * Checks if a character is a lowercase letter.
+ *
+ * @param char The character to check.
+ * @returns `true` if the character is a lowercase letter, otherwise `false`.
+ */
 export function isLetterLower(char: string): boolean {
   return char >= 'a' && char <= 'z'
 }
 
+/**
+ * Checks if a character is a letter (either uppercase or lowercase).
+ *
+ * @param char The character to check.
+ * @returns `true` if the character is a letter, otherwise `false`.
+ */
 export function isLetter(char: string): boolean {
   return isLetterUpper(char) || isLetterLower(char)
 }
 
+/**
+ * Checks if a character is a digit (0-9).
+ *
+ * @param char The character to check.
+ * @returns `true` if the character is a digit, otherwise `false`.
+ */
 export function isNumber(char: string): boolean {
   return char >= '0' && char <= '9'
 }
 
 /**
- * 是否空白符<br>
- * 空白符包括空格、制表符、全角空格和不间断空格<br>
+ * Checks if a character is a whitespace character.
+ * Whitespace characters include space, tab, full-width space, and non-breaking space.
  *
- * @param char 字符
- * @return 是否空白符
+ * @param char The character to check.
+ * @returns `true` if the character is a whitespace character, otherwise `false`.
  */
 export function isBlank(char: string): boolean {
   return '\f\n\r\t\v\u0020\u00A0\u1680\u2000\u200A\u2028\u2029\u202F\u205F\u3000\uFEFF'.includes(char)
