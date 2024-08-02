@@ -155,7 +155,6 @@ export function notEmptyArray<T>(val: readonly T[]): val is NonEmptyArray<T> {
  *
  * @param val - The array to access, of type `readonly T[]` or `T[]`, representing a read-only or mutable array.
  * @param index - The index position to access. Can be negative, where -n means the nth element from the end.
- * @returns The value at the specified index, or `undefined` if not found.
  */
 export function at(val: readonly [], index: number): undefined
 export function at<T>(val: readonly T[], index: number): T
@@ -174,7 +173,6 @@ export function at<T>(val: readonly T[] | [], index: number): T | undefined {
  * Retrieve the last element of an array.
  *
  * @param val - The array to retrieve the last element from.
- * @returns The last element of the array, or `undefined` if the array is empty.
  */
 export function last(val: readonly []): undefined
 export function last<T>(val: readonly T[]): T

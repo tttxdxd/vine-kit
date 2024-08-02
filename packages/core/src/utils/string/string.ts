@@ -279,15 +279,16 @@ export function hide(str: string, start: number, end: number) {
 /**
  * Replaces placeholders in a template string with provided values.
  *
- * If the first argument after the template is an object, placeholders in the form `{key}` will be replaced with the corresponding values from the object.
+ * If the first argument after the template is an object, placeholders in the form `{key}` will be replaced with corresponding values from the object.
  * If a placeholder key is not found in the object, the fallback value or function will be used.
- * If the fallback is a function, it will be called with the missing key as an argument.
+ * If the fallback is a function, it will be called with the missing key as its argument.
  *
- * If the first argument after the template is not an object, placeholders in the form `{index}` will be replaced with the corresponding values from the argument list.
+ * If the first argument after the template is not an object, placeholders in the form `{index}` will be replaced with corresponding values from the argument list.
  *
- * @param template - The template string with placeholders.
- * @param args - Values to replace the placeholders in the template.
- * @returns The formatted string with placeholders replaced.
+ * @param {string} template - The template string containing placeholders.
+ * @param {Record<string, any>} object - An object with values to replace the placeholders in the template.
+ * @param {string | ((key: string) => string)} [fallback] - A fallback value or function to use if a placeholder key is not found in the object.
+ * @returns {string} - The formatted string with placeholders replaced.
  *
  * @example
  * ```typescript
@@ -297,6 +298,26 @@ export function hide(str: string, start: number, end: number) {
  * ```
  */
 export function format(template: string, object: Record<string, any>, fallback?: string | ((key: string) => string)): string
+/**
+ * Replaces placeholders in a template string with provided values.
+ *
+ * If the first argument after the template is an object, placeholders in the form `{key}` will be replaced with corresponding values from the object.
+ * If a placeholder key is not found in the object, the fallback value or function will be used.
+ * If the fallback is a function, it will be called with the missing key as its argument.
+ *
+ * If the first argument after the template is not an object, placeholders in the form `{index}` will be replaced with corresponding values from the argument list.
+ *
+ * @param {string} template - The template string containing placeholders.
+ * @param {...(number | string)[]} args - Values to replace the placeholders in the template.
+ * @returns {string} - The formatted string with placeholders replaced.
+ *
+ * @example
+ * ```typescript
+ * format('Hello, {name}!', { name: 'Alice' }); // 'Hello, Alice!'
+ * format('The {0} {1} {2}', 'quick', 'brown', 'fox'); // 'The quick brown fox'
+ * format('Item {0} is {1}', 1, 'apple'); // 'Item 1 is apple'
+ * ```
+ */
 export function format(template: string, ...args: (number | string)[]): string
 export function format(template: string, ...args: any[]) {
   const [object, fallback] = args
