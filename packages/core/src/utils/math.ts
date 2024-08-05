@@ -72,3 +72,15 @@ export function sum(number: number | number[], ...numbers: number[]) {
 export function sumBy<T extends object>(array: T[], fn: (item: T) => number) {
   return array.reduce((a, b) => a + fn(b), 0)
 }
+
+/**
+ * Checks if a given number is within a specified range (inclusive).
+ *
+ * @param {number} value - The number to check.
+ * @param {number} min - The minimum value in the range (inclusive).
+ * @param {number} max - The maximum value in the range (inclusive).
+ * @returns {boolean} True if the number is within the specified range, false otherwise.
+ */
+export function inRange(value: number, min: number, max: number) {
+  return value >= min && value <= max
+}
