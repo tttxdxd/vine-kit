@@ -1,4 +1,4 @@
-import { isBoolean, isBooleanConstructor, isFloat, isInterger, isNumber, isNumberConstructor, isString, isStringConstructor } from '@vine-kit/core'
+import { isBoolean, isBooleanConstructor, isFloat, isInteger, isNumber, isNumberConstructor, isString, isStringConstructor } from '@vine-kit/core'
 import type { BasicCtor } from './types'
 
 export const Type = '__type__' as const
@@ -38,7 +38,7 @@ export class Boolean extends VineType {
 }
 export class Int extends VineType {
   declare readonly [Type]: number
-  static validate = isInterger
+  static validate = isInteger
 }
 export class Float extends VineType {
   declare readonly [Type]: number

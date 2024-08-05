@@ -1,5 +1,6 @@
-import type { Arrayable, NonEmptyArray, Nullable } from '../types'
-import { isFunction, isNullish, isUndefined } from './general'
+import type { Arrayable, NonEmptyArray, Nullable } from '@vine-kit/shared'
+import { isFunction, isNullish, isUndefined } from '@vine-kit/shared'
+
 import { randomInt } from './random'
 
 /**

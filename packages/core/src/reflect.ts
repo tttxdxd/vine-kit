@@ -1,5 +1,5 @@
-import type { Constructor } from '../types'
-import { isUndefined, notNull, notUndefined } from './general'
+import type { Constructor } from '@vine-kit/shared'
+import { isUndefined, notNull, notUndefined } from '@vine-kit/shared'
 
 type Target = Constructor | object
 type PropertyKey = string | symbol

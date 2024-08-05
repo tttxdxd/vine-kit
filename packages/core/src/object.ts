@@ -1,22 +1,5 @@
-import type { DeepPartial } from '../types'
-import { isArray, isFunction, isObject, isPlainObject, isString } from './general'
-
-/**
- * Determines whether an object has a property with the specified name.
- *
- * @category ObjectUtil
- * @param val
- * @param key — A property name.
- */
-export const hasOwn = (val: object, key: string | symbol): key is keyof typeof val => Object.prototype.hasOwnProperty.call(val, key)
-export const objectToString = Object.prototype.toString
-
-/**
- * Converts a type of value to a string.
- *
- * @category ObjectUtil
- */
-export const toTypeString = (val: unknown): string => objectToString.call(val)
+import type { DeepPartial } from '@vine-kit/shared'
+import { hasOwn, isArray, isFunction, isObject, isPlainObject, isString } from '@vine-kit/shared'
 
 /**
  * Checks if an object is empty.

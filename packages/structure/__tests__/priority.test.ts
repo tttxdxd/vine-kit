@@ -1,11 +1,12 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { Queue } from '@vine-kit/core'
 
-describe('queue', () => {
-  let queue: Queue<number>
+import { PriorityQueue } from '@vine-kit/structure'
+
+describe('priority queue', () => {
+  let queue: PriorityQueue<number>
 
   beforeEach(() => {
-    queue = new Queue<number>()
+    queue = new PriorityQueue<number>()
   })
 
   it('should initialize an empty queue', () => {
@@ -14,8 +15,8 @@ describe('queue', () => {
   })
 
   it('should push elements to the queue', () => {
-    queue.push(1)
     queue.push(2, 3, 4)
+    queue.push(1)
 
     expect(queue.empty()).toBe(false)
     expect(queue.size()).toBe(4)
@@ -30,9 +31,9 @@ describe('queue', () => {
     expect(queue.size()).toBe(3)
     expect(queue.peek()).toBe(2)
 
-    queue.pop()
-    queue.pop()
-    queue.pop()
+    expect(queue.pop()).toBe(2)
+    expect(queue.pop()).toBe(3)
+    expect(queue.pop()).toBe(4)
 
     expect(queue.empty()).toBe(true)
     expect(queue.size()).toBe(0)

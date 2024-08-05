@@ -1,4 +1,4 @@
-import { isFunction, notUndefined } from '../general'
+import { isFunction, notUndefined } from '@vine-kit/shared'
 
 /**
  * Creates a function that memoizes the result of `func`. If `resolver` is

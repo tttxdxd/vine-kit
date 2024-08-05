@@ -13,7 +13,7 @@ import * as ReflectUtil from './reflect'
 
 export * from './base'
 
-export * from './general'
+export * from '@vine-kit/shared'
 export * from './pipe'
 
 export * from './string'

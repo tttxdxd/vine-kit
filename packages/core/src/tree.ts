@@ -1,4 +1,6 @@
-import { groupBy, isString } from '..'
+import { isString } from '@vine-kit/shared'
+
+import { groupBy } from './array'
 
 interface TreeNode<T extends Record<string, any>> {
   id: string | number

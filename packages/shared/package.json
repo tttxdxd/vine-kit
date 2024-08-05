@@ -1,5 +1,5 @@
 {
-  "name": "@vine-kit/core",
+  "name": "@vine-kit/shared",
   "version": "0.1.4",
   "description": "A set of tools for JavaScript.",
   "author": "tttxdxd <tttxdxd@gmail.com>",
@@ -17,26 +17,13 @@
   "sideEffects": false,
   "exports": {
     ".": {
-      "node": {
-        "types": "./dist/index.d.ts",
-        "import": "./dist/index.mjs",
-        "require": "./dist/index.cjs"
-      },
-      "default": {
-        "types": "./dist/browser.d.ts",
-        "import": "./dist/browser.mjs",
-        "require": "./dist/browser.cjs"
-      }
-    },
-    "./browser": {
-      "types": "./dist/browser.d.ts",
-      "import": "./dist/browser.mjs",
-      "require": "./dist/browser.cjs"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
     }
   },
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
-  "browser": "dist/browser.mjs",
   "types": "dist/index.d.ts",
   "files": [
     "dist"
@@ -44,8 +31,5 @@
   "scripts": {
     "build": "unbuild",
     "stub": "unbuild --stub"
-  },
-  "dependencies": {
-    "@vine-kit/shared": "workspace:*"
   }
 }

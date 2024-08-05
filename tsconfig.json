@@ -8,6 +8,8 @@
     "moduleResolution": "node",
     "paths": {
       "vine-kit": ["./packages/vine-kit/src/index.ts"],
+      "@vine-kit/shared": ["./packages/shared/src/index.ts"],
+      "@vine-kit/structure": ["./packages/structure/src/index.ts"],
       "@vine-kit/core": ["./packages/core/src/index.ts"],
       "@vine-kit/schema": ["./packages/schema/src/index.ts"],
       "@vine-kit/flow": ["./packages/flow/src/index.ts"]

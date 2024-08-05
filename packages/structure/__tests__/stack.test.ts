@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it } from 'vitest'
-import { Stack } from '@vine-kit/core'
+
+import { Stack } from '@vine-kit/structure'
 
 describe('stack', () => {
   let stack: Stack<number>

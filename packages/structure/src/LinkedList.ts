@@ -1,4 +1,5 @@
-import { isUndefined } from '..'
+import { isUndefined } from '@vine-kit/shared'
+
 import { AbstractContainer } from './base'
 
 /**

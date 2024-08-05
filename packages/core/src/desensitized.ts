@@ -1,4 +1,4 @@
-import { isEmpty } from './general'
+import { isEmpty } from '@vine-kit/shared'
 import { Char, repeat, replace } from './string'
 
 /**

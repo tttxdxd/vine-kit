@@ -1,14 +1,4 @@
-import { toTypeString } from './object'
-
-/**
- * Always return undefined.
- */
-export function NOOP() { }
-
-/**
- * Always return false.
- */
-export const NO = () => false
+import { toTypeString } from './base'
 
 export const isNull = (val: unknown): val is null => val === null
 export function notNull<T>(val: T | null): val is T extends null ? never : T {
@@ -55,7 +45,9 @@ export function isPromise<T = any>(val: unknown): val is Promise<T> {
 export const isNaN = (val: any): boolean => isNumber(val) && Number.isNaN(val)
 export const isArrayLike = (val: any): val is ArrayLike<any> => !isNullish(val) && isNumber(val.length)
 
-export const isConstructor = (val: any): val is new () => any => isFunction(val) && val?.prototype?.constructor?.name
+export function isConstructor(val: any): val is new () => any {
+  return isFunction(val) && val.prototype !== undefined
+}
 export function isInstanceOf<T extends new (...args: any[]) => any>(val: unknown, type: T, isStrict: boolean): boolean {
   if (!val || typeof val !== 'object')
     return false
@@ -76,7 +68,7 @@ export function isWeakSet(val: unknown): val is WeakSet<object> {
   return toTypeString(val) === '[object WeakSet]'
 }
 
-export const isInterger = (val: unknown): val is number => Number.isInteger(val)
+export const isInteger = (val: unknown): val is number => Number.isInteger(val)
 export const isFloat = (val: unknown): val is number => isNumber(val) && !Number.isNaN(val)
 
 export const isNumberConstructor = (val: unknown): val is NumberConstructor => val === Number
