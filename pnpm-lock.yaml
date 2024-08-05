@@ -63,7 +63,11 @@ importers:
         specifier: ^2.0.3
         version: registry.npmmirror.com/vitest@2.0.3(@types/node@20.14.11)
 
-  packages/core: {}
+  packages/core:
+    dependencies:
+      '@vine-kit/shared':
+        specifier: workspace:*
+        version: link:../shared
 
   packages/di:
     dependencies:
@@ -88,6 +92,14 @@ importers:
       zod:
         specifier: ^3.23.8
         version: registry.npmmirror.com/zod@3.23.8
+
+  packages/shared: {}
+
+  packages/structure:
+    dependencies:
+      '@vine-kit/shared':
+        specifier: workspace:*
+        version: link:../shared
 
   packages/task: {}
 
@@ -1624,7 +1636,7 @@ packages:
   /@vue/compiler-core@3.3.12:
     resolution: {integrity: sha512-qAtjyG3GBLG0chzp5xGCyRLLe6wFCHmjI82aGzwuGKyznNP+GJJMxjc0wOYWDB2YKfho7niJFdoFpo0CZZQg9w==, tarball: https://registry.npmmirror.com/@vue/compiler-core/-/compiler-core-3.3.12.tgz}
     dependencies:
-      '@babel/parser': 7.23.6
+      '@babel/parser': 7.25.0
       '@vue/shared': 3.3.12
       estree-walker: 2.0.2
       source-map-js: 1.2.0
@@ -1640,7 +1652,7 @@ packages:
   /@vue/compiler-sfc@3.3.12:
     resolution: {integrity: sha512-yy5b9e7b79dsGbMmglCe/YnhCQgBkHO7Uf6JfjWPSf2/5XH+MKn18LhzhHyxbHdJgnA4lZCqtXzLaJz8Pd8lMw==, tarball: https://registry.npmmirror.com/@vue/compiler-sfc/-/compiler-sfc-3.3.12.tgz}
     dependencies:
-      '@babel/parser': 7.23.6
+      '@babel/parser': 7.25.0
       '@vue/compiler-core': 3.3.12
       '@vue/compiler-dom': 3.3.12
       '@vue/compiler-ssr': 3.3.12
@@ -1662,7 +1674,7 @@ packages:
   /@vue/reactivity-transform@3.3.12:
     resolution: {integrity: sha512-g5TijmML7FyKkLt6QnpqNmA4KD7K/T5SbXa88Bhq+hydNQEkzA8veVXWAQuNqg9rjaFYD0rPf0a9NofKA0ENgg==, tarball: https://registry.npmmirror.com/@vue/reactivity-transform/-/reactivity-transform-3.3.12.tgz}
     dependencies:
-      '@babel/parser': 7.23.6
+      '@babel/parser': 7.25.0
       '@vue/compiler-core': 3.3.12
       '@vue/shared': 3.3.12
       estree-walker: 2.0.2
