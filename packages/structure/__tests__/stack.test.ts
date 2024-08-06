@@ -10,7 +10,7 @@ describe('stack', () => {
   })
 
   it('should initialize an empty stack', () => {
-    expect(stack.empty()).toBe(true)
+    expect(stack.isEmpty()).toBe(true)
     expect(stack.size()).toBe(0)
   })
 
@@ -19,7 +19,7 @@ describe('stack', () => {
     stack.push(2)
     stack.push(3)
 
-    expect(stack.empty()).toBe(false)
+    expect(stack.isEmpty()).toBe(false)
     expect(stack.size()).toBe(3)
     expect(stack.top()).toBe(3)
   })
@@ -37,7 +37,7 @@ describe('stack', () => {
     stack.pop()
     stack.pop()
 
-    expect(stack.empty()).toBe(true)
+    expect(stack.isEmpty()).toBe(true)
     expect(stack.size()).toBe(0)
     expect(stack.top()).toBeUndefined()
   })
@@ -49,7 +49,7 @@ describe('stack', () => {
 
     stack.clear()
 
-    expect(stack.empty()).toBe(true)
+    expect(stack.isEmpty()).toBe(true)
     expect(stack.size()).toBe(0)
     expect(stack.top()).toBeUndefined()
   })
@@ -61,7 +61,7 @@ describe('stack', () => {
     stack.push(1)
     const singleItem = stack.pop()
     expect(singleItem).toBe(1)
-    expect(stack.empty()).toBe(true)
+    expect(stack.isEmpty()).toBe(true)
     expect(stack.size()).toBe(0)
     expect(stack.top()).toBeUndefined()
   })

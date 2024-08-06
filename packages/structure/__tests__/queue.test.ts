@@ -10,7 +10,7 @@ describe('queue', () => {
   })
 
   it('should initialize an empty queue', () => {
-    expect(queue.empty()).toBe(true)
+    expect(queue.isEmpty()).toBe(true)
     expect(queue.size()).toBe(0)
   })
 
@@ -18,7 +18,7 @@ describe('queue', () => {
     queue.push(1)
     queue.push(2, 3, 4)
 
-    expect(queue.empty()).toBe(false)
+    expect(queue.isEmpty()).toBe(false)
     expect(queue.size()).toBe(4)
     expect(queue.peek()).toBe(1)
   })
@@ -35,7 +35,7 @@ describe('queue', () => {
     queue.pop()
     queue.pop()
 
-    expect(queue.empty()).toBe(true)
+    expect(queue.isEmpty()).toBe(true)
     expect(queue.size()).toBe(0)
     expect(queue.peek()).toBeUndefined()
   })
@@ -44,7 +44,7 @@ describe('queue', () => {
     queue.push(1, 2, 3)
     queue.clear()
 
-    expect(queue.empty()).toBe(true)
+    expect(queue.isEmpty()).toBe(true)
     expect(queue.size()).toBe(0)
     expect(queue.peek()).toBeUndefined()
   })
@@ -56,7 +56,7 @@ describe('queue', () => {
     queue.push(1)
     const singleElement = queue.pop()
     expect(singleElement).toBe(1)
-    expect(queue.empty()).toBe(true)
+    expect(queue.isEmpty()).toBe(true)
     expect(queue.size()).toBe(0)
     expect(queue.peek()).toBeUndefined()
   })
