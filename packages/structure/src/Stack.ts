@@ -56,4 +56,8 @@ export class Stack<T> extends AbstractContainer<T> {
 
     return this._list[this._length - 1] // Return the last item of the array
   }
+
+  toArray(): T[] {
+    return this._list.slice()
+  }
 }

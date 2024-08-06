@@ -11,8 +11,6 @@ import * as TreeUtil from './tree'
 import * as IdUtil from './id'
 import * as ReflectUtil from './reflect'
 
-export * from './base'
-
 export * from '@vine-kit/shared'
 export * from './pipe'
 

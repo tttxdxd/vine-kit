@@ -1,5 +1,5 @@
-import type { Constructor } from '@vine-kit/core'
-import { assert } from '@vine-kit/core'
+import type { Constructor } from '@vine-kit/shared'
+import { assert } from '@vine-kit/shared'
 
 import type { Provider } from './provider'
 import { Scope, isAliasProvider, isClassProvider, isFactoryProvider, isNormalToken, isProvider } from './provider'

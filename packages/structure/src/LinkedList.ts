@@ -53,6 +53,16 @@ export class LinkedList<T> extends AbstractContainer<T> {
   peek() {
     return this._head
   }
+
+  toArray(): T[] {
+    const result: T[] = []
+    let node = this._head
+    while (!isUndefined(node)) {
+      result.push(node.val)
+      node = node.next
+    }
+    return result
+  }
 }
 
 class ListNode<T> {

@@ -1,6 +1,7 @@
 import 'reflect-metadata'
-import type { Constructor } from '@vine-kit/core'
-import { ReflectUtil, isObject, isUndefined, notUndefined } from '@vine-kit/core'
+import type { Constructor } from '@vine-kit/shared'
+import { isObject, isUndefined, notUndefined } from '@vine-kit/shared'
+import { ReflectUtil } from '@vine-kit/core'
 
 import { container } from './container'
 import type { InjectionToken } from './types'

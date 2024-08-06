@@ -70,6 +70,10 @@ export class PriorityQueue<T> extends AbstractContainer<T> {
     return this._list[0]
   }
 
+  toArray(): T[] {
+    return this._list.slice()
+  }
+
   /**
    * 从节点 i 开始，从底至顶堆化
    * @param i

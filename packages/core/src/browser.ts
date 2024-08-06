@@ -10,8 +10,6 @@ import * as MathUtil from './math'
 import * as TreeUtil from './tree'
 import * as IdUtil from './id/browser'
 
-export * from './base'
-
 export * from '@vine-kit/shared'
 export * from './pipe'
 

@@ -6,7 +6,7 @@ import { AbstractContainer } from './base'
 
 const QUEUE_CONSTANT = {
   ALLOCATE_SIGMA: 0.5,
-  MIN_ALLOCATE_SIZE: (1 << 12),
+  MIN_ALLOCATE_SIZE: (1 << 12), // 4096
 }
 
 export class Queue<T> extends AbstractContainer<T> {
@@ -24,19 +24,13 @@ export class Queue<T> extends AbstractContainer<T> {
     this._length = 0
   }
 
-  /**
-   * O(1)
-   */
   push(...items: T[]) {
     this.resize()
     this._list.push(...items)
     this._length += items.length
   }
 
-  /**
-   * O(1)
-   */
-  pop(): T | undefined {
+  pop() {
     if (this._length === 0)
       return undefined
 
@@ -59,13 +53,19 @@ export class Queue<T> extends AbstractContainer<T> {
     return this._list[this._first]
   }
 
+  toArray() {
+    return this._list.slice(this._first, this._length) as T[]
+  }
+
   private resize() {
     if (this._first === 0)
       return
 
     const capacity = this._list.length
 
-    if (capacity > QUEUE_CONSTANT.MIN_ALLOCATE_SIZE && this._first > capacity * QUEUE_CONSTANT.ALLOCATE_SIGMA)
+    if (capacity > QUEUE_CONSTANT.MIN_ALLOCATE_SIZE && this._first > capacity * QUEUE_CONSTANT.ALLOCATE_SIGMA) {
       this._list = this._list.slice(this._first, this._first + this._length)
+      this._first = 0
+    }
   }
 }
