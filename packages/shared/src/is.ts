@@ -1,4 +1,4 @@
-import { toTypeString } from './base'
+import { toTypeString } from './general'
 
 export const isNull = (val: unknown): val is null => val === null
 export function notNull<T>(val: T | null): val is T extends null ? never : T {

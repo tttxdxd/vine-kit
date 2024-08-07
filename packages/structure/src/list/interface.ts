@@ -36,12 +36,12 @@ export interface IQueue<T = void> extends IContainer<T> {
    * push an item onto the queue
    * O(1)
    */
-  push: (item: T) => void
+  enqueue: (item: T) => void
   /**
    * pop the top item off the queue
    * O(1)
    */
-  pop: () => T | undefined
+  dequeue: () => T | undefined
   /**
    * peek the top item without popping it off the queue
    * O(1)
@@ -78,22 +78,22 @@ export interface IDeque<T = void> extends IContainer<T> {
    * push an item onto the deque
    * O(1)
    */
-  push_back: (item: T) => void
+  pushBack: (item: T) => void
   /**
    * pop the top item off the deque
    * O(1)
    */
-  push_front: (item: T) => void
+  pushFront: (item: T) => void
   /**
    * pop the top item off the deque
    * O(1)
    */
-  pop_back: () => T | undefined
+  popBack: () => T | undefined
   /**
    * pop the top item off the deque
    * O(1)
    */
-  pop_front: () => T | undefined
+  popFront: () => T | undefined
   /**
    * peek the top item without popping it off the deque
    * O(1)

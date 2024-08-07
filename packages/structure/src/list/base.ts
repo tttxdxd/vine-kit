@@ -23,6 +23,10 @@ export abstract class AbstractContainer<T> implements IContainer<T> {
     return this._length === 0
   }
 
+  [Symbol.iterator](): IterableIterator<T> {
+    return this.toArray()[Symbol.iterator]()
+  }
+
   abstract clear(): void
   abstract toArray(): T[]
 }
