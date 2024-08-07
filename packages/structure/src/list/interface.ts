@@ -78,12 +78,12 @@ export interface IDeque<T = void> extends IContainer<T> {
    * push an item onto the deque
    * O(1)
    */
-  pushBack: (item: T) => void
+  pushBack: (item: T) => number
   /**
    * pop the top item off the deque
    * O(1)
    */
-  pushFront: (item: T) => void
+  pushFront: (item: T) => number
   /**
    * pop the top item off the deque
    * O(1)
