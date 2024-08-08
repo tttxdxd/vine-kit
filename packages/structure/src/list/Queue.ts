@@ -1,71 +1,39 @@
-/**
- * FIFO
- */
-
 import { AbstractContainer } from './base'
+import { Deque } from './deque'
+import type { IQueue } from './interface'
 
-const QUEUE_CONSTANT = {
-  ALLOCATE_SIGMA: 0.5,
-  MIN_ALLOCATE_SIZE: (1 << 12), // 4096
-}
+const MIN_ALLOCATE_SIZE = 1 << 12
 
-export class Queue<T> extends AbstractContainer<T> {
-  private _list: (T | undefined)[]
-  private _first = 0
+export class Queue<T> extends AbstractContainer<T> implements IQueue<T> {
+  private _deque: Deque<T>
+  protected get _length() {
+    return this._deque.size()
+  }
 
-  constructor(initialValue?: Iterable<T> | ArrayLike<T>) {
+  constructor(initialValue?: Iterable<T> | ArrayLike<T>, allocateSize = MIN_ALLOCATE_SIZE) {
     super()
-    this._list = initialValue ? Array.from(initialValue) : []
+    const list = initialValue ? Array.from(initialValue) : []
+    this._deque = new Deque(list, allocateSize)
   }
 
-  clear() {
-    this._list = []
-    this._first = 0
-    this._length = 0
+  enqueue(...item: T[]) {
+    item.forEach(i => this._deque.pushBack(i))
+    return this._length
   }
 
-  push(...items: T[]) {
-    this.resize()
-    this._list.push(...items)
-    this._length += items.length
+  dequeue(): T | undefined {
+    return this._deque.popFront()
   }
 
-  pop() {
-    if (this._length === 0)
-      return undefined
-
-    const temp = this._list[this._first]
-
-    this._list[this._first] = undefined
-    this._length -= 1
-    this._first += 1
-
-    return temp
-  }
-
-  /**
-   * O(1)
-   */
   peek(): T | undefined {
-    if (this._length === 0)
-      return undefined
-
-    return this._list[this._first]
+    return this._deque.front()
   }
 
-  toArray() {
-    return this._list.slice(this._first, this._length) as T[]
+  clear(): void {
+    this._deque.clear()
   }
 
-  private resize() {
-    if (this._first === 0)
-      return
-
-    const capacity = this._list.length
-
-    if (capacity > QUEUE_CONSTANT.MIN_ALLOCATE_SIZE && this._first > capacity * QUEUE_CONSTANT.ALLOCATE_SIGMA) {
-      this._list = this._list.slice(this._first, this._first + this._length)
-      this._first = 0
-    }
+  toArray(): T[] {
+    return this._deque.toArray()
   }
 }

@@ -14,26 +14,26 @@ describe('queue', () => {
     expect(queue.size()).toBe(0)
   })
 
-  it('should push elements to the queue', () => {
-    queue.push(1)
-    queue.push(2, 3, 4)
+  it('should enqueue elements to the queue', () => {
+    queue.enqueue(1)
+    queue.enqueue(2, 3, 4)
 
     expect(queue.isEmpty()).toBe(false)
     expect(queue.size()).toBe(4)
     expect(queue.peek()).toBe(1)
   })
 
-  it('should pop elements from the queue', () => {
-    queue.push(1, 2, 3, 4)
+  it('should enqueue elements from the queue', () => {
+    queue.enqueue(1, 2, 3, 4)
 
-    const firstElement = queue.pop()
+    const firstElement = queue.dequeue()
     expect(firstElement).toBe(1)
     expect(queue.size()).toBe(3)
     expect(queue.peek()).toBe(2)
 
-    queue.pop()
-    queue.pop()
-    queue.pop()
+    queue.dequeue()
+    queue.dequeue()
+    queue.dequeue()
 
     expect(queue.isEmpty()).toBe(true)
     expect(queue.size()).toBe(0)
@@ -41,7 +41,7 @@ describe('queue', () => {
   })
 
   it('should clear the queue', () => {
-    queue.push(1, 2, 3)
+    queue.enqueue(1, 2, 3)
     queue.clear()
 
     expect(queue.isEmpty()).toBe(true)
@@ -50,11 +50,11 @@ describe('queue', () => {
   })
 
   it('should handle edge cases', () => {
-    const emptyQueueValue = queue.pop()
+    const emptyQueueValue = queue.dequeue()
     expect(emptyQueueValue).toBeUndefined()
 
-    queue.push(1)
-    const singleElement = queue.pop()
+    queue.enqueue(1)
+    const singleElement = queue.dequeue()
     expect(singleElement).toBe(1)
     expect(queue.isEmpty()).toBe(true)
     expect(queue.size()).toBe(0)

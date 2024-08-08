@@ -67,7 +67,7 @@ export interface IStack<T = void> extends IContainer<T> {
    * peek the top item without popping it off the stack
    * O(1)
    */
-  peek: () => T | undefined
+  top: () => T | undefined
 }
 
 /**

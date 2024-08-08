@@ -39,6 +39,12 @@ describe('deque', () => {
     expect(deque.toArray()).toEqual([3])
   })
 
+  it('should return the correct front and back element', () => {
+    const deque = new Deque<number>([1])
+    expect(deque.front()).toBe(1)
+    expect(deque.back()).toBe(1)
+  })
+
   it('should return the correct front and back elements', () => {
     const deque = new Deque<number>([1, 2, 3])
     expect(deque.front()).toBe(1)
@@ -52,24 +58,32 @@ describe('deque', () => {
   })
 
   it('should expand on pushBack', () => {
-    const count = 10240
-    const deque = new Deque<number>()
+    const count = 1024
+    const deque = new Deque<number>([], 10)
     const list = []
     for (let i = 0; i < count; ++i) {
       expect(deque.pushBack(i)).toBe(list.push(i))
       expect(deque.size()).toBe(list.length)
     }
     expect(deque.size()).toBe(count)
+
+    for (let i = 0; i < count; ++i) {
+      expect(deque.popBack()).toBe(list.pop())
+    }
   })
 
   it('should expand on pushFront', () => {
-    const count = 10240
-    const deque = new Deque<number>()
+    const count = 1024
+    const deque = new Deque<number>([], 10)
     const list = []
     for (let i = 0; i < count; ++i) {
       expect(deque.pushFront(i)).toBe(list.unshift(i))
       expect(deque.size()).toBe(list.length)
     }
     expect(deque.size()).toBe(count)
+
+    for (let i = 0; i < count; ++i) {
+      expect(deque.popFront()).toBe(list.shift())
+    }
   })
 })

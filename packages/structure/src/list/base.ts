@@ -5,8 +5,6 @@ import type { IContainer } from './interface'
  * @template T The type of elements stored in the container.
  */
 export abstract class AbstractContainer<T> implements IContainer<T> {
-  protected _length = 0 // Number of elements in the container
-
   /**
    * Returns the number of elements in the container.
    * @returns The number of elements in the container.
@@ -27,6 +25,7 @@ export abstract class AbstractContainer<T> implements IContainer<T> {
     return this.toArray()[Symbol.iterator]()
   }
 
+  protected abstract _length: number
   abstract clear(): void
   abstract toArray(): T[]
 }
