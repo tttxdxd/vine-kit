@@ -26,9 +26,35 @@ A set of tools for JavaScript.
 
 ## Features
 
+- [ ] Core Utilities Library @vine-kit/core
+  - [ ] Basic Tools
+  - [x] Retry Functions
+- [ ] Shared Library @vine-kit/shared
+  - [x] Basic Type Checking
+- [ ] Data Structures @vine-kit/structure
+    - [x] Doubly Linked List
+    - [x] Linked List
+    - [x] Queue, Stack
+    - [x] Priority Queue (Min Heap)
+- [ ] Task Scheduling @vine-kit/task
+- [ ] Data Modeling Tools @vine-kit/model
+- [ ] SQL Query Tools @vine-kit/sql
+
+## Usage
+Install the vine-kit library using npm:
+
 ```bash
 $ npm install vine-kit
 ```
+
+## Modules
+
+- [x] @vine-kit/core: The core utilities module, providing functionalities like basic type checking and retry mechanisms.
+- [x] @vine-kit/shared: The shared utilities module, providing basic type checking.
+- [x] @vine-kit/structure: The data structures module, providing functionalities like doubly linked list, linked list, queue and stack.
+- [ ] @vine-kit/task: The task scheduling module, providing functionalities like delay and interval.
+- [ ] @vine-kit/model: The data modeling module, providing functionalities like model validation.
+- [ ] @vine-kit/sql: The SQL query module, providing functionalities like SQL query.
 
 ## License
 

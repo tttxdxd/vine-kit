@@ -25,27 +25,35 @@ vine-kit
 <br>
 
 ## Features
-- 封装常用的工具函数
 
-- [ ] 核心基础工具 @vine-kit/core
-  - [ ] 数据结构
-    - [x] 队列、栈
-    - [x] 链表
-    - [x] 优先队列（最小堆）
-    - [ ] 双向队列
+- [ ] 核心工具库 @vine-kit/core
   - [ ] 基础工具
-    - [x] 基础类型判断
     - [x] 重试函数
+- [ ] 通用库 @vine-kit/shared
+  - [x] 基础类型判断
+- [ ] 数据结构 @vine-kit/structure
+    - [x] 双向队列
+    - [x] 链表
+    - [x] 队列、栈
+    - [x] 优先队列（最小堆）
 - [ ] 定时任务 @vine-kit/task
 - [ ] 数据层定义工具 @vine-kit/model
 - [ ] 数据库查询工具 @vine-kit/sql
 
-## Installation and Usage
-Install the library with `npm install vine-kit`
+## Usage
+使用npm安装vine-kit库：
 
 ```bash
 $ npm install vine-kit
 ```
+
+## Modules
+- [x] [@vine-kit/core](https://www.npmjs.com/package/@vine-kit/core): 核心基础工具模块，提供基础类型判断、重试函数等功能。
+- [x] [@vine-kit/shared](https://www.npmjs.com/package/@vine-kit/shared): 通用库，vine-kit 内部常用的工具函数。
+- [x] [@vine-kit/structure](https://www.npmjs.com/package/@vine-kit/structure): 数据结构模块，提供丰富的数据结构和基础工具，包括双向队列、链表、队列、栈、优先队列（最小堆）等。
+- [ ] [@vine-kit/task](https://www.npmjs.com/package/@vine-kit/task): 定时任务模块，提供定时任务的创建、销毁等功能。
+- [ ] [@vine-kit/model](https://www.npmjs.com/package/@vine-kit/model): 数据层定义工具，提供数据层定义、数据层操作等功能。
+- [ ] [@vine-kit/sql](https://www.npmjs.com/package/@vine-kit/sql): 数据库查询工具，提供数据库查询、事务等功能。
 
 ## License
 
