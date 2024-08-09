@@ -1,9 +1,11 @@
+import { MIN_ALLOCATE_SIZE } from '../constants'
+import type { ISequentialContainer } from '../interface'
 import { AbstractContainer } from './base'
-import type { IDeque } from './interface'
 
-const MIN_ALLOCATE_SIZE = 1 << 12
-
-export class Deque<T> extends AbstractContainer<T> implements IDeque<T> {
+/**
+ * A deque (double-ended queue) implementation using a bucketed array.
+ */
+export class Deque<T> extends AbstractContainer<T> implements ISequentialContainer<T> {
   private _map: (T | undefined)[][]
   private _bucketStart: number
   private _bucketEnd: number
@@ -78,7 +80,7 @@ export class Deque<T> extends AbstractContainer<T> implements IDeque<T> {
   }
 
   popBack(): T | undefined {
-    if (this._length === 0)
+    if (this.isEmpty())
       return undefined
 
     const temp = this._map[this._bucketEnd][this._end]
@@ -103,7 +105,7 @@ export class Deque<T> extends AbstractContainer<T> implements IDeque<T> {
   }
 
   popFront(): T | undefined {
-    if (this._length === 0)
+    if (this.isEmpty())
       return undefined
 
     const temp = this._map[this._bucketStart][this._start]
@@ -128,13 +130,13 @@ export class Deque<T> extends AbstractContainer<T> implements IDeque<T> {
   }
 
   front(): T | undefined {
-    if (this._length === 0)
+    if (this.isEmpty())
       return undefined
     return this._map[this._bucketStart][this._start]
   }
 
   back(): T | undefined {
-    if (this._length === 0)
+    if (this.isEmpty())
       return undefined
     return this._map[this._bucketEnd][this._end]
   }
@@ -146,7 +148,7 @@ export class Deque<T> extends AbstractContainer<T> implements IDeque<T> {
   }
 
   toArray(): T[] {
-    if (this._length === 0)
+    if (this.isEmpty())
       return []
     const result = []
     for (let i = this._bucketStart; i <= this._bucketEnd; ++i) {

@@ -1,4 +1,4 @@
-import type { IContainer } from './interface'
+import type { IContainer } from '../interface'
 
 /**
  * Represents an abstract container.
