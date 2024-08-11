@@ -32,7 +32,7 @@ A set of tools for JavaScript.
 - [ ] Shared Library @vine-kit/shared
   - [x] Basic Type Checking
 - [ ] Data Structures @vine-kit/structure
-    - [x] Doubly Linked List
+    - [x] Deque
     - [x] Linked List
     - [x] Queue, Stack
     - [x] Priority Queue (Min Heap)
