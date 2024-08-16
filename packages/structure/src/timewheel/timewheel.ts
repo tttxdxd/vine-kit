@@ -67,6 +67,9 @@ export class TimeWheel {
     if (this.current && this.current.next <= task.next) {
       return
     }
+    else {
+      clearTimeout(this.timer)
+    }
 
     const delay = Math.max(task.next - Date.now(), 0)
 
