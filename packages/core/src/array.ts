@@ -298,9 +298,8 @@ export function keyBy<T>(iterable: Iterable<T> | ArrayLike<T>, key: keyof T): Re
 export function keyBy<T>(iterable: Iterable<T> | ArrayLike<T>, fn: (val: T) => string): Record<string, T>
 export function keyBy<T>(iterable: Iterable<T> | ArrayLike<T>, keyFn: ((val: T) => string) | keyof T): Record<string, T> {
   return reduce(iterable, (acc, val) => {
-    const key = isFunction(keyFn) ? keyFn(val) : keyFn
-    const valKey = (val as any)[key]
-    acc[valKey] = val
+    const key = isFunction(keyFn) ? keyFn(val) : (val as any)[keyFn]
+    acc[key] = val
     return acc
   }, {} as Record<any, T>)
 }
